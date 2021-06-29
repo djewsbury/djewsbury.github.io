@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Spherical Harmonics and applications in real time graphics - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="Yikes; it&amp;rsquo;s been awhile since my last update!
+I wanted to share a little bit of information from a technique I&amp;rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &amp;ldquo;spherical harmonics&amp;rdquo; for extremely efficient high quality diffuse environment illumination.
+This is a technique that started to become popular maybe around 15 years ago &amp;ndash; possibly because of its usefulness on low power hardware." />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Spherical Harmonics and applications in real time graphics - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Spherical Harmonics and applications in real time graphics" />
+<meta property="og:description" content="Yikes; it&rsquo;s been awhile since my last update!
+I wanted to share a little bit of information from a technique I&rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &ldquo;spherical harmonics&rdquo; for extremely efficient high quality diffuse environment illumination.
+This is a technique that started to become popular maybe around 15 years ago &ndash; possibly because of its usefulness on low power hardware." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2016/12/sphericalharmonics0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-12-27T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2016-12-27T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Spherical Harmonics and applications in real time graphics">
+<meta itemprop="description" content="Yikes; it&rsquo;s been awhile since my last update!
+I wanted to share a little bit of information from a technique I&rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &ldquo;spherical harmonics&rdquo; for extremely efficient high quality diffuse environment illumination.
+This is a technique that started to become popular maybe around 15 years ago &ndash; possibly because of its usefulness on low power hardware."><meta itemprop="datePublished" content="2016-12-27T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2016-12-27T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2119">
+<meta itemprop="keywords" content="SphericalHarmonics," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spherical Harmonics and applications in real time graphics"/>
+<meta name="twitter:description" content="Yikes; it&rsquo;s been awhile since my last update!
+I wanted to share a little bit of information from a technique I&rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &ldquo;spherical harmonics&rdquo; for extremely efficient high quality diffuse environment illumination.
+This is a technique that started to become popular maybe around 15 years ago &ndash; possibly because of its usefulness on low power hardware."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/12/sphericalharmonics0/"
+    >Spherical Harmonics and applications in real time graphics</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/12/sphericalharmonics0/" class="article-date">
+  <time datetime="2016-12-27 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-12-27</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/sphericalharmonics/"> SphericalHarmonics </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2119 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>Yikes; it&rsquo;s been awhile since my last update!</p>
+<p>I wanted to share a little bit of information from a technique I&rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &ldquo;spherical harmonics&rdquo; for extremely efficient high quality diffuse environment illumination.</p>
+<p>This is a technique that started to become popular maybe around 15 years ago &ndash; possibly because of its usefulness on low power hardware. It fell out of favour for awhile, I was never entirely clear why. I got some good value from it back then, and I hope to get more good value from the technique now; so perhaps it&rsquo;s time for spherical harmonic&rsquo;s star to come around again?</p>
+<p>There&rsquo;s a fair amount of information about spherical harmonics on the internet, but some of can be a little dense. There seems to be lack of information on how to take the first few steps in applying this math to the graphics domain (for example, for diffuse environment lighting). So I&rsquo;ll try to keep this page approachable for graphics programmers, while also linking off to some of the more dense and abstract stuff later on. And I&rsquo;ll focus specifically on how I&rsquo;m using this math for graphics, how I&rsquo;ve used it in the past, and how I&rsquo;d like that to grow in the future.</p>
+<h2 id="what-are-spherical-harmonics">What are spherical harmonics</h2>
+<p>The &ldquo;spherical harmonics&rdquo; are a series of equations that we&rsquo;ll use to compress lighting information greatly. The easiest way to understand them is to start with something simpler and analogous &ndash; and that is cubic splines.</p>
+<p>Splines are a method of describing a curve through space with a finite number of points (or points and tangents). Even though the curve is defined by a finite number of parameters, the result is effectively an infinite number of points. To define the curve, we need equations of the form:</p>
+<p><figure><img src="/media/SphericalHarmonics/basic_spline.png"/>
+</figure>
+
+<!-- raw HTML omitted --></p>
+<p>Where <strong>t</strong> is the distance along the spline (usually between 0 and 1) and <strong>x</strong>, <strong>y</strong> &amp; <strong>z</strong> are cartesian coordinates.
+In the case of cubic splines, the functions <strong>f</strong>, <strong>h</strong> and <strong>g</strong> are cubic polynomials. If you&rsquo;ve used Bezier splines before, you may be familiar with a way to express these polynomials using a form called a <em>&ldquo;Bernstein polynomial&rdquo;</em>.</p>
+<h3 id="bernstein-basis">Bernstein basis</h3>
+<p>Imagine the folowing 4 equations:
+<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p><em>By Ben FrantzDale (Graphed in Matplotlib.) [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC BY-SA 4.0-3.0-2.5-2.0-1.0 (http://creativecommons.org/licenses/by-sa/4.0-3.0-2.5-2.0-1.0)], via Wikimedia Commons</em></p>
+<p>These are the Bernstein basis functions (<strong>B0()</strong>, <strong>B1()</strong>, <strong>B2()</strong>, <strong>B3()</strong>).
+Using these functions, we can express a cubic polynomial in this form:
+<figure><img src="/media/SphericalHarmonics/bernsteinbasis.png"/>
+</figure>
+</p>
+<p>Where <strong>w0</strong>, <strong>w1</strong>, <strong>w2</strong> &amp; <strong>w3</strong> are constant weights. The four weight values will determine the shape of the curve we get. This is the important thing &ndash; the Bernstein basis functions are defined so that we get any cubic polynomial function, just by changing the 4 weight values. And the four weight values provide a convenient way to express a spline (alternatively we can do similar things with other basis functions &ndash; like the <em>Hermite basis</em>, or for different types of equations, the <em>Fourier basis</em>).</p>
+<p>When dealing with cubic polynormals, we use 4 Bernstein basis equations; but the equations are defined for any degree polynomials. So, for example, if we were working with 5th degree polynomials, then we could calculate 6 associated Bernstein basis functions.</p>
+<h3 id="sh-basis">SH basis</h3>
+<p>But we want to know how this relates to spherical harmonics! <em>(But the interested might want to diverge off to Wolfram &amp; Wikipedia: <a href="http://mathworld.wolfram.com/BernsteinPolynomial.html,">http://mathworld.wolfram.com/BernsteinPolynomial.html,</a> <a href="https://en.wikipedia.org/wiki/B%C3%A9zier_curve">https://en.wikipedia.org/wiki/B%C3%A9zier_curve</a>)</em>.</p>
+<p>It turns out that the &ldquo;spherical harmonics&rdquo; are actually a series of equations which are a little bit similar to the Bernstein basis functions (&ldquo;harmonic&rdquo; being just a name for a certain kind of equation). But the spherical harmonics are special because they are defined for a very specific type of data. And that is values that are defined across the surface of a sphere&hellip;</p>
+<p>Above, we used Bernstein basis functions to express polynomials. But the type of function that can be expressed using spherical harmonics looks a little like this:
+<figure><img src="/media/SphericalHarmonics/spherical_function.png"/>
+</figure>
+</p>
+<p>Here, <strong>theta</strong> and <strong>phi</strong> are spherical coordinates. Also note that another way to express the spherical coordinates <strong>theta</strong> and <strong>phi</strong> is by using a unit length vector!</p>
+<h2 id="simplest-application-in-graphics">Simplest application in graphics</h2>
+<p>So why is this type of equation useful? Well, there&rsquo;s another common construct in graphics that represents values stored over the surface of sphere &ndash; that is a <em>cubemap</em>.</p>
+<p>When we use a cubemap for the background sky in a shader, we probably have a line of shader code a little like this:</p>
+<pre><code>float3 skyColor = MySkyCubeMap.Sample(MySampler, unitLengthVector.xyz).rgb;
+</code></pre>
+<p>For any given direction, the cubemap will give us a colour value. Even though it&rsquo;s a <strong>cube</strong>map, it&rsquo;s defining colour values across the surface of a sphere <em>(before cubemaps we used other mappings, like <strong>spheremaps</strong> and <strong>paraboloid</strong> maps &ndash; but it turns out that, oddly, a cube is just the cheapest approximation to a sphere for shaders)</em>. We could use spherical harmonics to do something very similar.</p>
+<p>In the spline example, the analogous operation would be fitting a curve to texture values. So imagine we had an RGB single dimensional texture. We would need 1 spline for each component, but let&rsquo;s take red as an example. Since this is a 1D texture, we can graph the red values against the (1D) texture coordinate as so:</p>
+<figure><img src="/media/SphericalHarmonics/fit_curve.svg"/>
+</figure>
+
+<p>In theory, we can find a best fit cubic spline for this data. If we do that, we can use the spline as a (non-discrete) replacement for the texture (if we were doing the reverse &ndash; using a texture as a replacement for a function &ndash; we would called it a lookup table).</p>
+<p>The degree of the spline will determine how accurately we can approach the source data. Most textures would need very high degree polynomials to even get close. In general, high frequency information is hard to replicate, but low frequency information can sometimes come through.</p>
+<p>In practice, this usually isn&rsquo;t a very useful thing to do &ndash; though there are applications along this line of thought (such as cubic interpolation between texels, particularly with terrain heightmaps). We&rsquo;re also starting to tread on &ldquo;signal processing&rdquo; ground (which we might use for deep ocean wave simulations, like the one in XLE).</p>
+<p>So why would we ever want to replace a cubemap with a function using spherical harmonics? Isn&rsquo;t that just as useless? The answer is no! There are some important cases where spherical harmonics are both accurate enough and useful enough to be worth our attention!</p>
+<h2 id="cartesian-spherical-harmonics">Cartesian spherical harmonics</h2>
+<p>The spherical harmonics can be expressed in spherical coordinates or cartesian coordinates. For graphics, the cartesian form is much more useful.</p>
+<p>Our notation for the harmonics themselves will be this:
+<figure><img src="/media/SphericalHarmonics/cartesian_form.png"/>
+</figure>
+</p>
+<p>Where <em>l</em> (lower case L) is the &ldquo;band index&rdquo; and <em>m</em> is a value with the constraint <em>-l</em> ≤ <em>m</em> ≤ <em>l</em>.
+The number of bands is the analogue of the degree of a polynomial &ndash; more bands means greater accuracy and better reproduction of higher frequency data. For realtime stuff, we&rsquo;ll focus on the first 3 &ldquo;bands&rdquo;.
+If you look around Wolfram or Wikipedia, you&rsquo;ll see more complex forms of the equations. But this form is good for our applications.</p>
+<p>There are the first 3 bands, in the form we&rsquo;ll use in XLE:
+<figure><img src="/media/SphericalHarmonics/cartesian_form_eqns.png"/>
+</figure>
+</p>
+<p>To get a sense of how these equations look in 3D space, here&rsquo;s a picture of the first 4 bands from Wikipedia (note that the blue represents positive numbers, the yellow is negative):
+<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->
+<!-- raw HTML omitted --><em>By Inigo.quilez (Own work) [CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0)], via Wikimedia Commons</em></p>
+<p>It&rsquo;s important to be aware that you&rsquo;ll see slightly different variations of these equations in different publications. This is why it&rsquo;s not always safe to combine equations from different sources (such as the rotation equations and optimization equations we&rsquo;ll get to later).</p>
+<ul>
+<li>this form employs the &ldquo;<strong>Condon-Shortley phase</strong>&rdquo;. This basically just adds the negative sign in front of some of the equations. This reduces the complexity of some of derived equations (such as the equations for rotation). Not all graphics literature use this form (for example, Robin Green doesn&rsquo;t, but Peter-Pike Sloan does)</li>
+<li>the order in which <em>y</em>, <em>z</em> &amp; <em>x</em> appear in band 1 can be different in different forms (this ordering seems to be most common, but it does make the rotation code a little more confusing)</li>
+<li>this form assumes that the vector [<em>x</em> <em>y</em> <em>z</em>] is unit length (ie: <em>x</em>^2+<em>y</em>^2+<em>z</em>^2=1). For our applications, that&rsquo;s always true &ndash; but many sources don&rsquo;t mention that as an assumption</li>
+<li>the equation for <em>m</em>=0 &amp; <em>l</em>=2 is often expressed with 2<em>z</em>^2 - <em>x</em>^2 - <em>y</em>^2 in the brackets. But, given the unit length assumption, this equivalent</li>
+<li>finally, there seems to be some uncertainty about the constant in the equation when <em>m</em>=2 &amp; <em>l</em>=2 (maybe?). While working on this page, I noticed that some sources have 15/16, others have 15/32. I&rsquo;m not sure what' going on there &ndash; I might have to re-derive the equation to figure that out</li>
+</ul>
+<p>In short, we can&rsquo;t just copy/paste our why through spherical harmonics. We have to know what&rsquo;s going on. (It&rsquo;s also a good example of why you should never trust the correctness of any code you find on the internet!)</p>
+<h2 id="projecting-into-spherical-harmonics-and-reconstruction">Projecting into spherical harmonics and reconstruction</h2>
+<p>As mentioned above, we want to combine the spherical harmonics with weight values, and use this combination to express some complex spherical function. Converting a function into spherical harmonics is called &ldquo;projection.&rdquo; Using the spherical harmonics to get back an approximation of the original function is called &ldquo;reconstruction.&rdquo;</p>
+<p>The projected form of a function is just the set of weights &ndash; one weight for each spherical harmonic (up to some limit on the number of bands). The weights are called coefficients. Let&rsquo;s say our input function is the red channel of a cubemap. We&rsquo;ll use 3 bands to approximate that &ndash; that&rsquo;s 9 equations, and 9 coefficients. Since we also want the green and blue channels, that&rsquo;s another 9 coefficients per channel.</p>
+<p>In effect, we end up with an approximation of the input cubemap in just 9 color values. Obviously we can&rsquo;t represent much high frequency data with so few colours. We could get higher quality versions with more bands (4 bands would be 16 colour coefficients, 5 would be 25, 6 would be 36). This might be useful for spherical reflections, but for diffuse (as we&rsquo;ll see later) there&rsquo;s a good reason to stop at 3 bands.</p>
+<h3 id="projection-and-reconstruction">Projection and Reconstruction</h3>
+<p>Projection is surprising simple. We can calculate each coefficient separately, and we do that by just finding the integral of the input function multiplied by the corresponding spherical harmonic.</p>
+<figure><img src="/media/SphericalHarmonics/projection.png"/>
+</figure>
+
+<p>Since our input function is discreet (ie, it&rsquo;s just pixels in a cubemap), the integral becomes simple. We just need to multiply the pixel values by the spherical harmonic for the cubemap direction &ndash; the only difficulty is to weight for the solid angle of the cubemap pixel (see the XLE shader code for this equation).</p>
+<p>The reconstruction formula is also very simple; and should now look oddly familiar:</p>
+<figure><img src="/media/SphericalHarmonics/reconstruction.png"/>
+</figure>
+
+<p>Here, we just take the weighted sum of the spherical harmonics for a given direction (where <em>b</em> is the band number limit). It&rsquo;s pretty straight forward; but it gets more complex from here.</p>
+<h3 id="example">Example</h3>
+<p>So what does it look like? Here&rsquo;s an example environment texture and the equivalent constructed environment. I&rsquo;m going to skip ahead just a bit and show how it looks when we construct diffuse reflectance from an environment texture.
+These are equirectangular panorama maps; trivially compressed to LDR jpgs.</p>
+<h3 id="source-texture">Source texture</h3>
+<p><figure><img src="/media/SphericalHarmonics/mans_0.jpg"/>
+</figure>
+
+<!-- raw HTML omitted -->(from sIBL Archive: <a href="http://www.hdrlabs.com/sibl/archive.html">http://www.hdrlabs.com/sibl/archive.html</a>)</p>
+<h3 id="reference-diffuse-response">Reference diffuse response</h3>
+<p>ie, for each direction in the panorama map, this shows the correct diffuse response of the environment, from a plain lambert diffuse BRDF.
+<figure><img src="/media/SphericalHarmonics/reference.jpg"/>
+</figure>
+</p>
+<h3 id="reconstructed-response-with-spherical-harmonics-compression">Reconstructed response with spherical harmonics compression</h3>
+<figure><img src="/media/SphericalHarmonics/reconstruct.jpg"/>
+</figure>
+
+<h3 id="absolute-difference-multiplied-by-20">Absolute difference multiplied by 20</h3>
+<figure><img src="/media/SphericalHarmonics/diff.jpg"/>
+</figure>
+
+<p>The reconstructed response is using 3 bands; so it&rsquo;s stored using just 9 colour values.
+As you can see, there is some information loss &ndash; but we can actually prove mathematically that the maximum error is pretty small.</p>
+<h2 id="to-be-continued">To be continued</h2>
+<p>So, we&rsquo;ve got the very basics down. We know enough to be able to compress a cubemap down to spherical harmonic form, and reconstruct an approximation from that.</p>
+<p>Alone, it may sound like an interesting thing to do; but it&rsquo;s not very useful yet. I&rsquo;ll follow this up with some details on how we can use spherical harmonics for some really interesting stuff. Still to cover:</p>
+<ul>
+<li>combining our compressed environment information with the lambert diffuse equation</li>
+<li>building optimized reconstruction code for shaders</li>
+<li>rotating and manipulating spherical harmonics at runtime (and optimization thereof)</li>
+<li>applications in global illumination schemes</li>
+<li>some examples from around the web, and a list of the right literature to follow up with</li>
+<li>some cool examples of SH used in games (eg; <em>The Last of Us</em>, <em>The Order: 1886</em>)!</li>
+</ul>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2016/12/sphericalharmonics0/" title="Spherical Harmonics and applications in real time graphics" target="_blank" rel="external">https://djewsbury.github.io/2016/12/sphericalharmonics0/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2016/06/juneupdate/" title="Latest Update"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/"
+                    title="Spherical Harmonics and applications in real time graphics (part 2)"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

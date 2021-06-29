@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Processing textures with the XLE scriptable asset path - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="I&amp;rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.
+Of course this system isn&amp;rsquo;t designed to be 100% robust and fool proof. Actually, it&amp;rsquo;s just a few simple scripts. But it is scalable and flexible.
+Gradle At heart, an &amp;ldquo;asset path&amp;rdquo; is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work." />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Processing textures with the XLE scriptable asset path - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Processing textures with the XLE scriptable asset path" />
+<meta property="og:description" content="I&rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.
+Of course this system isn&rsquo;t designed to be 100% robust and fool proof. Actually, it&rsquo;s just a few simple scripts. But it is scalable and flexible.
+Gradle At heart, an &ldquo;asset path&rdquo; is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2016/01/assetpathscripts/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-01-26T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2016-01-26T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Processing textures with the XLE scriptable asset path">
+<meta itemprop="description" content="I&rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.
+Of course this system isn&rsquo;t designed to be 100% robust and fool proof. Actually, it&rsquo;s just a few simple scripts. But it is scalable and flexible.
+Gradle At heart, an &ldquo;asset path&rdquo; is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work."><meta itemprop="datePublished" content="2016-01-26T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2016-01-26T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="844">
+<meta itemprop="keywords" content="AssetPath,Gradle,IBL," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Processing textures with the XLE scriptable asset path"/>
+<meta name="twitter:description" content="I&rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.
+Of course this system isn&rsquo;t designed to be 100% robust and fool proof. Actually, it&rsquo;s just a few simple scripts. But it is scalable and flexible.
+Gradle At heart, an &ldquo;asset path&rdquo; is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/01/assetpathscripts/"
+    >Processing textures with the XLE scriptable asset path</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/01/assetpathscripts/" class="article-date">
+  <time datetime="2016-01-26 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-01-26</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/assetpath/"> AssetPath </a>
+    <a class="article-tag-link" href="/tags/gradle/"> Gradle </a>
+    <a class="article-tag-link" href="/tags/ibl/"> IBL </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 844 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>I&rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.</p>
+<p>Of course this system isn&rsquo;t designed to be 100% robust and fool proof. Actually, it&rsquo;s just a few simple scripts. But it is scalable and flexible.</p>
+<h2 id="gradle">Gradle</h2>
+<p>At heart, an <strong>&ldquo;asset path&rdquo;</strong> is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work.</p>
+<p>For example, we might have an asset for a sky background texture. Various processing tools need to pre-filter this texture so it can be used for image based lighting. Whenever the texture changes (or when the processing tools change) we want to execute the processing steps and produce intermediate assets.</p>
+<p>XLE does some processing at runtime. But that is only practical for short processing steps. Expensive processing steps need some other solution.</p>
+<p>So we need some build system to manage assets and dependences. Are requirements are similar to build systems we use for code. But most code-oriented build systems don&rsquo;t work well for assets.</p>
+<p>I picked <em>Gradle</em> because of it&rsquo;s procedural nature. It allows us to specify input assets &ndash; but also to give instructions to the build path on how to handle that object. For example, we need to tell the build path if a texture is a sky texture, a normals texture, or some other type&hellip; That kind of thing just falls out of <em>Gradle</em> very easily.</p>
+<h2 id="executing-gradle">Executing Gradle</h2>
+<p>First, you need to install Gradle, from: <a href="http://gradle.org/gradle-download/">http://gradle.org/gradle-download/</a></p>
+<p>In Tools/AssetPath, we have the &ldquo;settings.gradle&rdquo; root project file. Also, this folder contains some &ldquo;groovy&rdquo; source files that contain gradle task type implementations. So, there is a task type for processing sky textures &ndash; which basically just involves executing a number of command line operations.</p>
+<p>I&rsquo;ve also defined a root task called <strong>&ldquo;tex&rdquo;</strong>. This is where gradle starts to shine. The &ldquo;tex&rdquo; task searches through the entire working folder for build.gradle files that contain tasks whose names being with <strong>&ldquo;tex&hellip;&quot;</strong>. All of the tasks found become subtasks of the root &ldquo;tex&rdquo; task.</p>
+<p>So, we can create a <strong>&ldquo;build.gradle&rdquo;</strong> in any folder in the working directory. And if we add tasks to that file that being with &ldquo;tex&rdquo; (typically &ldquo;tex0&rdquo;, &ldquo;tex1&rdquo;, etc), they will be automatically added as subtasks of the root &ldquo;tex&rdquo; task.</p>
+<p>This is important because when we execute gradle (using the <em>&ldquo;Tools/AssetPath/execute.bat&rdquo;</em> batch file) and pass the root task &ldquo;tex&rdquo; on the command line, this has the effect of execute all &ldquo;tex&hellip;&rdquo; tasks in the entire working directory.</p>
+<p>Pretty cool, right? We can also execute individual tasks using the normal gradle command line.</p>
+<p>There is an example in git in <em>&ldquo;Working/Game/xleres/DefaultResources/build.gradle.&quot;</em> This project will generate the standard lookup tables.</p>
+<h2 id="processing-textures">Processing Textures</h2>
+<p>Executing Gradle is just the first step. Gradle is just going to chain together command line operations. Those operations require a bunch of tools.</p>
+<p>One of the most useful task types is &ldquo;xle.EquiRectEnv.&rdquo; This takes in a equirectangular (ie, paranoramic) environment map and produces 3 important textures: Cubemap background, Specular IBL texture and Diffuse IBL texture.</p>
+<p>This get a little complicated. This is just the pipeline I use for processing these textures myself. So it&rsquo;s a little complicated and involved right now.</p>
+<p>First, install these:</p>
+<ol>
+<li><em>AMD CubemapGen</em> (<a href="http://developer.amd.com/tools-and-sdks/archive/legacy-cpu-gpu-tools/cubemapgen/">http://developer.amd.com/tools-and-sdks/archive/legacy-cpu-gpu-tools/cubemapgen/</a>)</li>
+<li><em>Sébastien Lagarde&rsquo;s modified CubemapGen</em>: <a href="https://seblagarde.wordpress.com/2012/06/10/amd-cubemapgen-for-physically-based-rendering/">https://seblagarde.wordpress.com/2012/06/10/amd-cubemapgen-for-physically-based-rendering/</a></li>
+<li><em>nvcompress</em> ** from nvidia-texture-tools (see below)</li>
+<li><em>TextureProcess</em> sample from XLE</li>
+</ol>
+<p>All of these must in the system environment variable <strong>path</strong>. In the case of TextureProcess, don&rsquo;t move the executable from the Finals_** folders (because it needs to find the working directory for shaders).</p>
+<p>I use a slightly slightly modified version of nvidia-texture-tools that works better with HDR textures. The standard nvidia-texture-tools always tonemaps HDR textures on load-in (frustratingly). You can find my modified version here: <a href="https://github.com/djewsbury/nvidia-texture-tools">https://github.com/djewsbury/nvidia-texture-tools</a>. This modified version allows us to read HDR files (from .hdr and other formats) and write unprocessed floating point .dds file.</p>
+<p>Sébastien Lagarde&rsquo;s <strong>ModifiedCubeMapGen</strong> is used to generate the diffuse IBL texture. This goes via a spherical harmonic representation before arriving at a small cubemap.</p>
+<p>XLE&rsquo;s <strong>TextureProcess.exe</strong> is used to generate the specular IBL texture, as well as compressing to BC6. The specular IBL process reads from a equirectangular HDR map and writes a cubemap.</p>
+<p>All of these textures need to be compress to BC6. Awkwardly, nvidia-texture-tools doesn&rsquo;t support compressing HDR data to BC6 properly, but <strong>TextureProcess.exe</strong> can do that via the <strong>DirectXTex</strong> library.</p>
+<p>So, once you&rsquo;ve got all of that, compiled it all, put in all in the path&hellip; Then you&rsquo;re ready to process textures.</p>
+<p>Intermediate outputs from this process get written into the &ldquo;int/u&rdquo; (or intermediate/universal) directory. From there, you can copy it out, or do what you like. You should get a <em>(file).dds</em>, <em>(file)_diffuse.dds</em> &amp; <em>(file)_specular.dds</em>.</p>
+<h2 id="make-it-your-own">Make it your own!</h2>
+<p>It&rsquo;s difficult to get this working the first time. There&rsquo;s a lot of work. But once it&rsquo;s going, all of the parts are extensible and exchangeable. It&rsquo;s a simple, but very flexible system. Handy for managing small, everyday processing tasks.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2016/01/assetpathscripts/" title="Processing textures with the XLE scriptable asset path" target="_blank" rel="external">https://djewsbury.github.io/2016/01/assetpathscripts/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2016/01/transmittedspecular/" title="Transmitted specular"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://djewsbury.github.io/2016/01/transmittedspecular2/"
+                    title="Transmitted specular progress"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

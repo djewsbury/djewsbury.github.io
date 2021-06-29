@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/blog/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/categories/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/categories/misc/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/posts/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2021/06/quickupdate/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2021/06/straightskeleton0/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/straightskeleton/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/categories/xle/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/</loc>
+    <lastmod>2021-06-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2017/02/sphericalharmonics2/</loc>
+    <lastmod>2017-02-12T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/sphericalharmonics/</loc>
+    <lastmod>2017-02-12T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/api/</loc>
+    <lastmod>2017-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/cross-platform/</loc>
+    <lastmod>2017-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/rendering/</loc>
+    <lastmod>2017-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/vulkan/</loc>
+    <lastmod>2017-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2017/01/vulkanworkshop2017/</loc>
+    <lastmod>2017-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2017/01/sphericalharmonics1/</loc>
+    <lastmod>2017-01-08T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/12/sphericalharmonics0/</loc>
+    <lastmod>2016-12-27T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/06/juneupdate/</loc>
+    <lastmod>2016-06-19T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/metal/</loc>
+    <lastmod>2016-05-09T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/05/metallayerrefactoring/</loc>
+    <lastmod>2016-05-09T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/hlsl/</loc>
+    <lastmod>2016-05-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/lighting/</loc>
+    <lastmod>2016-05-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/shaders/</loc>
+    <lastmod>2016-05-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/spir-v/</loc>
+    <lastmod>2016-05-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/05/vulkanmoreprogress/</loc>
+    <lastmod>2016-05-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkandeclarativelightingparser/</loc>
+    <lastmod>2016-04-22T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkanbigissues/</loc>
+    <lastmod>2016-04-15T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkantips/</loc>
+    <lastmod>2016-04-12T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkanprototypeslowprogress/</loc>
+    <lastmod>2016-04-08T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkanshaderprototype/</loc>
+    <lastmod>2016-04-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/04/vulkan/</loc>
+    <lastmod>2016-04-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/03/compareoitrans/</loc>
+    <lastmod>2016-03-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/oitrans/</loc>
+    <lastmod>2016-03-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/03/envshots/</loc>
+    <lastmod>2016-03-30T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/screenshots/</loc>
+    <lastmod>2016-03-30T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/03/release0040/</loc>
+    <lastmod>2016-03-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/releases/</loc>
+    <lastmod>2016-03-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/03/environmentsample/</loc>
+    <lastmod>2016-03-25T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/samples/</loc>
+    <lastmod>2016-03-25T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/tools/</loc>
+    <lastmod>2016-03-25T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/03/newtoolfeatures/</loc>
+    <lastmod>2016-03-14T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/ggx/</loc>
+    <lastmod>2016-02-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/ibl/</loc>
+    <lastmod>2016-02-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/specular/</loc>
+    <lastmod>2016-02-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/02/transmittedspecular3/</loc>
+    <lastmod>2016-02-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/02/improvedibl/</loc>
+    <lastmod>2016-02-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/lights/</loc>
+    <lastmod>2016-02-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/arealights/</loc>
+    <lastmod>2016-01-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/01/transmittedspecular2/</loc>
+    <lastmod>2016-01-29T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/assetpath/</loc>
+    <lastmod>2016-01-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/gradle/</loc>
+    <lastmod>2016-01-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/01/assetpathscripts/</loc>
+    <lastmod>2016-01-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/01/transmittedspecular/</loc>
+    <lastmod>2016-01-25T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/materialtool/</loc>
+    <lastmod>2016-01-22T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/01/transmissionnodegraph/</loc>
+    <lastmod>2016-01-22T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2016/01/materialtool/</loc>
+    <lastmod>2016-01-21T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/d3d/</loc>
+    <lastmod>2015-12-16T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/functionlinkedshaders/</loc>
+    <lastmod>2015-12-16T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/shadercompile/</loc>
+    <lastmod>2015-12-16T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/rectlightdiffuse/</loc>
+    <lastmod>2015-12-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/rectanglelights/</loc>
+    <lastmod>2015-12-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/workingonrectlights/</loc>
+    <lastmod>2015-12-09T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/whattodofirst/</loc>
+    <lastmod>2015-12-04T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/arealightsandpbr/</loc>
+    <lastmod>2015-12-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/materials/</loc>
+    <lastmod>2015-12-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/pbr/</loc>
+    <lastmod>2015-12-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/tags/roughness/</loc>
+    <lastmod>2015-12-02T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/categories/blog/</loc>
+    <lastmod>2015-12-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/2015/12/first/</loc>
+    <lastmod>2015-12-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/about/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://djewsbury.github.io/series/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+</urlset>

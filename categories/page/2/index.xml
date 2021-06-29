@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on XLE development blog</title>
+    <link>https://djewsbury.github.io/categories/</link>
+    <description>Recent content in Categories on XLE development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://djewsbury.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Transmitted specular</title>
+      <link>https://djewsbury.github.io/2016/02/transmittedspecular3/</link>
+      <pubDate>Fri, 05 Feb 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/02/transmittedspecular3/</guid>
+      <description>I&amp;rsquo;ve been playing with the transmitted specular implementation for IBL, and working on getting the right balance and visual impression for glass. Background textures from http://www.hdrlabs.com/sibl/archive.html It&amp;rsquo;s curious to think about how terms have changed over the last few years. &amp;ldquo;Specular transmission&amp;rdquo; is the term I&amp;rsquo;ve been using to talk about what we might have previously called &amp;ldquo;refraction mapping&amp;rdquo;, and &amp;ldquo;specular IBL&amp;rdquo; is the new term for &amp;ldquo;reflection mapping.&amp;rdquo; The</description>
+    </item>
+    
+    <item>
+      <title>Improved IBL</title>
+      <link>https://djewsbury.github.io/2016/02/improvedibl/</link>
+      <pubDate>Mon, 01 Feb 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/02/improvedibl/</guid>
+      <description>I&amp;rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.
+The best way to do this is by comparing our real-time result to other renderers. So, for example, I&amp;rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&amp;rsquo;s &amp;ldquo;IRay&amp;rdquo; raytracer built-in &amp;ndash; so we can compare the non-real-time results from IRay with real-time XLE.</description>
+    </item>
+    
+    <item>
+      <title>Transmitted specular progress</title>
+      <link>https://djewsbury.github.io/2016/01/transmittedspecular2/</link>
+      <pubDate>Fri, 29 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/01/transmittedspecular2/</guid>
+      <description>Just a quick update&amp;hellip; I&amp;rsquo;ve been making some great progress with transmitted specular for IBL!
+ These screenshots will look a little strange (I mean that black borders &amp;amp; grainyness), because it&amp;rsquo;s a debugging rendering mode.
+ I&amp;rsquo;ve got the split-term stuff going; and it looks like it should be practical. I&amp;rsquo;d prefer to avoid having yet another cubemap, so maybe there&amp;rsquo;s some way to just reuse the reflection filtered cubemap.</description>
+    </item>
+    
+    <item>
+      <title>Processing textures with the XLE scriptable asset path</title>
+      <link>https://djewsbury.github.io/2016/01/assetpathscripts/</link>
+      <pubDate>Tue, 26 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/01/assetpathscripts/</guid>
+      <description>I&amp;rsquo;ve included a few Gradle scripts in the XLE distribution. This is mostly just a simple set of tools I use for my own testing. But you may find it useful for your own needs.
+Of course this system isn&amp;rsquo;t designed to be 100% robust and fool proof. Actually, it&amp;rsquo;s just a few simple scripts. But it is scalable and flexible.
+Gradle At heart, an &amp;ldquo;asset path&amp;rdquo; is some system that can identify changed assets, recognize processing working that needs to be performed with those assets, and schedule that work.</description>
+    </item>
+    
+    <item>
+      <title>Transmitted specular</title>
+      <link>https://djewsbury.github.io/2016/01/transmittedspecular/</link>
+      <pubDate>Mon, 25 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/01/transmittedspecular/</guid>
+      <description>I&amp;rsquo;ve modified the lighting equations to allow for transmitted (as well as reflected) specular for dynamic lightings. Transmitted specular means the light is on the opposite side of the object, but light is coming through the object towards the viewer.
+This is important for thin materials (such as leaves)
+No transmitted specular:  With transmitted specular:  Here the amount of transmission is maybe slightly too high &amp;ndash; but it shows the effect well.</description>
+    </item>
+    
+    <item>
+      <title>Transmission Node Diagram</title>
+      <link>https://djewsbury.github.io/2016/01/transmissionnodegraph/</link>
+      <pubDate>Fri, 22 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/01/transmissionnodegraph/</guid>
+      <description>Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &amp;ldquo;Microfacet Models for Refraction through Rough Surfaces.&amp;quot; Also known as the &amp;ldquo;GGX&amp;rdquo; model (or Trowbridge-Reitz).
+ You can see how the node graph comes in handy for debugging a shader function like this. It&amp;rsquo;s useful to visualize each term and see it&amp;rsquo;s effects. For example, the &amp;ldquo;D&amp;rdquo; term of the BTDF is a node on the diagram.</description>
+    </item>
+    
+    <item>
+      <title>Material and Node Diagram Tool</title>
+      <link>https://djewsbury.github.io/2016/01/materialtool/</link>
+      <pubDate>Thu, 21 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/01/materialtool/</guid>
+      <description>The master branch has just been updated! It now includes a major new tool, called the MaterialTool. This is a dedicated app for building materials and applying them to objects, and includes some cool new features&amp;hellip;
+In XLE, most material information can be authored in standard graphics packages (like 3DS Max, Maya, Substance Painter, etc). In particular, the most critical material values (color, roughness, specular &amp;amp; metal) can come directly from standard packages.</description>
+    </item>
+    
+    <item>
+      <title>Dynamic Function Linking Graph for Shaders</title>
+      <link>https://djewsbury.github.io/2015/12/functionlinkedshaders/</link>
+      <pubDate>Wed, 16 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/functionlinkedshaders/</guid>
+      <description>For many modern engines, the shear quantity of different configuration options for shaders can start to be a major burden. Many compile-time options can end up increasing the number of compiled shaders exponentially. It can get to the point where the shaders data image can make up a large segment of download time, and compile time can be a major hassle during development.
+For example, a pixel shader for forward lit scene elements will often need to be specialized to suit the number and types of lights nearby.</description>
+    </item>
+    
+    <item>
+      <title>Rectangle Light diffuse vs 3DS Max</title>
+      <link>https://djewsbury.github.io/2015/12/rectlightdiffuse/</link>
+      <pubDate>Fri, 11 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/rectlightdiffuse/</guid>
+      <description>Just a quick note on rectangle light diffuse. In XLE, rectangle lights are slightly different from the default rectangle lights in 3DS Max.
+XLE rectangle lights emit light mostly in the forward direction (and a reduced amount sideways). But in the 3DS Max Quicksilver renderer, rectangle lights emit light in all direction.
+Edge cases This is partially because the method we&amp;rsquo;re using for diffuse doesn&amp;rsquo;t work well on extreme angles. In the above example, the light plane and the top/bottom/left/right walls are actually perpendicular.</description>
+    </item>
+    
+    <item>
+      <title>Working some improvements to rectangle lights</title>
+      <link>https://djewsbury.github.io/2015/12/workingonrectlights/</link>
+      <pubDate>Wed, 09 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/workingonrectlights/</guid>
+      <description>Post updated on 2015-12-10
+This is just some notes about some ideas I&amp;rsquo;ve been playing with lately. I&amp;rsquo;ve been thinking about some improvements to the specular highlights for rectangle lights!
+The current implementation is based on the method by Michal Drobot in GPU Pro 5. I&amp;rsquo;m not going to repeat the description here (I&amp;rsquo;ll only give a few details) &amp;ndash; but I recommend buying the book and having a look! It&amp;rsquo;s quite a good method, and interesting read.</description>
+    </item>
+    
+    <item>
+      <title>What to do first</title>
+      <link>https://djewsbury.github.io/2015/12/whattodofirst/</link>
+      <pubDate>Fri, 04 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/whattodofirst/</guid>
+      <description>So, you&amp;rsquo;ve just downloaded XLE, and you&amp;rsquo;re wondering what to do first? Here&amp;rsquo;s a suggestion for the first 10 minutes:
+ Startup the level editor Select the Level Editor as the startup project:  You should use the Debug/x64 or Release/x64 configuration. Though XLE works in both 32 bit and 64 bits modes, normal usage for the level editor should be in 64 bits mode.
+If you have trouble compiling, see the [Getting Started Compiling page] (https://github.</description>
+    </item>
+    
+    <item>
+      <title>Area Lights with Physically Based Rendering</title>
+      <link>https://djewsbury.github.io/2015/12/arealightsandpbr/</link>
+      <pubDate>Wed, 02 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/arealightsandpbr/</guid>
+      <description>XLE now support a few area light types: sphere, tube &amp;amp; rectangle (with disc and maybe some other shapes coming soon). Maybe in a future post I&amp;rsquo;ll go into some details about the implementation (actually, it&amp;rsquo;s quite interesting!). But this post is about something different: this post is about why they are important.
+I&amp;rsquo;m finding that it makes a huge difference. So much so that not only do we want to support area lights &amp;ndash; we also want to outlaw non-area lights.</description>
+    </item>
+    
+    <item>
+      <title>First post</title>
+      <link>https://djewsbury.github.io/2015/12/first/</link>
+      <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2015/12/first/</guid>
+      <description>This blog will contain some day-to-day information about XLE.
+Let&amp;rsquo;s start with some screenshots, rendered with XLE:
+ The Captain character from Archeage (US site).
+ One of the (many) costumes from Archeage.
+ A skeleton enemy from Archeage.
+ A military spacecraft.
+ The &amp;ldquo;Gweonid&amp;rdquo; character from Archeage.
+ A metal golem character from Archeage.
+ One of the costumes from Archeage, and &amp;ldquo;Nyra&amp;rdquo; character. Nyra model comes from Paul Tosca.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://djewsbury.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/about/</guid>
+      <description>XLE is an open-source game engine in which I stuff a lot of the cool tricks and implementations I&amp;rsquo;ve built over the years (currently in development and evolving over time!). Sometimes I post about interesting implementations here. Hopefully you find sometime curious or informative!
+Find us on Github: https://github.com/djewsbury/XLE</description>
+    </item>
+    
+  </channel>
+</rss>

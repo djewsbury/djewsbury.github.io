@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Dynamic Function Linking Graph for Shaders - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="Stitching shaders together at runtime to deal with shader configuration explosion" />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Dynamic Function Linking Graph for Shaders - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Dynamic Function Linking Graph for Shaders" />
+<meta property="og:description" content="Stitching shaders together at runtime to deal with shader configuration explosion" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2015/12/functionlinkedshaders/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2015-12-16T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2015-12-16T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Dynamic Function Linking Graph for Shaders">
+<meta itemprop="description" content="Stitching shaders together at runtime to deal with shader configuration explosion"><meta itemprop="datePublished" content="2015-12-16T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2015-12-16T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1796">
+<meta itemprop="keywords" content="D3D,ShaderCompile," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dynamic Function Linking Graph for Shaders"/>
+<meta name="twitter:description" content="Stitching shaders together at runtime to deal with shader configuration explosion"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2015/12/functionlinkedshaders/"
+    >Dynamic Function Linking Graph for Shaders</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2015/12/functionlinkedshaders/" class="article-date">
+  <time datetime="2015-12-16 00:00:00 &#43;0000 UTC" itemprop="datePublished">2015-12-16</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/d3d/"> D3D </a>
+    <a class="article-tag-link" href="/tags/shadercompile/"> ShaderCompile </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1796 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 9 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>For many modern engines, the shear quantity of different configuration options for shaders can start to be a major burden. Many compile-time options can end up increasing the number of compiled shaders exponentially. It can get to the point where the shaders data image can make up a large segment of download time, and compile time can be a major hassle during development.</p>
+<p>For example, a pixel shader for forward lit scene elements will often need to be specialized to suit the number and types of lights nearby. If we have a few different types of lights, the number of combinations can become very quickly unmanageable.</p>
+<p>But we really need a lot of compile time options! They are very useful.</p>
+<h2 id="dynamic-linking-methods-in-d3d">Dynamic linking methods in D3D</h2>
+<p>What we really need is a way to do dynamic linking of shaders &ndash; so that we can construct the particular shader we need at runtime.</p>
+<p>D3D provides a few different methods for dynamic shader linking.
+The one simple method involves &ldquo;classes&rdquo; and &ldquo;interfaces.&rdquo;</p>
+<h2 id="classes-and-interfaces">Classes and interfaces</h2>
+<p>In the shader code, we can define an interface like this:</p>
+<pre><code>interface ILightResolver
+{
+    float3 Resolve(
+        GBufferValues sample,
+        LightSampleExtra sampleExtra,
+        LightDesc light,
+        float3 worldPosition,
+        float3 directionToEye,
+        LightScreenDest screenDest);
+};
+</code></pre>
+<p>Then we can create an implementation of this interface:</p>
+<pre><code>class Directional : ILightResolver
+{
+    float3 Resolve(
+        GBufferValues sample,
+        LightSampleExtra sampleExtra,
+        LightDesc light,
+        float3 worldPosition,
+        float3 directionToEye,
+        LightScreenDest screenDest)
+    {
+        ...
+    }
+};
+</code></pre>
+<p>All of the methods in the interface function like virtual methods in C++. We can select which particular implementation to use from C++ code.
+It sounds very convenient &ndash; and indeed it is really convenient!</p>
+<p>XLE has supported this method for some time; but it&rsquo;s mostly just used for debugging shaders.
+While his method can work very well in simple situations, it has severe performance problems in complex situations.</p>
+<h2 id="problems-with-lighting-resolve">Problems with lighting resolve</h2>
+<p>The biggest issue here is that each possible implementation class is included in the one single &ldquo;uber&rdquo; shader. There are &ldquo;call&rdquo; instructions inserted into the compiled code that will jump to the correct implementation. This jumping should be quick (actually nvidia cards have had quick branching on static bools for a very long time) but in this case the issue is the shader just becomes too large.</p>
+<p>If we exceed the instruction cache for pixel shaders, it could cause some very serious performance problems.</p>
+<p>With deferred rendering, the granularity seems wrong. We select a configuration, and then use it on a very large number of pixels. And then select the next configuration, etc&hellip; It doesn&rsquo;t seem right to have redundant code in the shader when we select the configuration infrequently.</p>
+<p>There can also be problems passing large structures through the interface. In this sample, passing GBufferValues values is not ideal. The shader compiler seems to need to consume temporary registers to hold all of the parameters passed &ndash; and in this case the number of parameters is too large.</p>
+<h2 id="static-polymorphism-with-interfaces">Static polymorphism with interfaces</h2>
+<p>One of the cool things about interfaces and classes is they can be resolved at compile time! If we know the true type of the class at compile time, then the shader compiler will treat it just as a normal function call.</p>
+<p>This works even if we are interacting with an interface pointer. So for example, I can have the function:</p>
+<pre><code>ILightResolver      GetLightResolver()
+{
+    #if LIGHT_SHAPE == 1
+        Sphere result;
+    #elif LIGHT_SHAPE == 2
+        Tube result;
+    #elif LIGHT_SHAPE == 3
+        Rectangle result;
+    #else
+        Directional result;
+    #endif
+    return result;
+}
+</code></pre>
+<p>Now, if I call GetLightResolver().Resolve(&hellip;) is it not a dynamic jump. It is treated just as a normal function call. So I can use GetLightResolver() anywhere, and never have to write the preprocessor switch stuff again.</p>
+<p>This is a great hidden feature of the HLSL compiler! It&rsquo;s static polymorphism, just like using function overloads or templates in C++. It can really make shader code cleaner and clearer (but unfortunately this doesn&rsquo;t work with the feature described in the next section).</p>
+<h2 id="patching-shaders-together">Patching shaders together</h2>
+<p>Our lighting shaders can actually be split into 3 logical parts:</p>
+<ol>
+<li>light shape</li>
+<li>shadow cascade resolve</li>
+<li>shadow resolve</li>
+</ol>
+<p>Each part has a different configuration settings, but we can mix and match them together</p>
+<p>What we really want is to be able to choose a configuration for each part independently, and then just stick them all together as one. We could do this back on old consoles &ndash; when we had a lot of control of low level stuff, we would just compile the parts of shaders, and patch them into one a runtime.</p>
+<h2 id="enter-id3d11linker">Enter ID3D11Linker</h2>
+<p>Actually, D3D11 has a new feature that can do something like this. It involves the interfaces ID3D11Linker and ID3D11FunctionLinkingGraph. These are new features, but they are features of the compiler &ndash; so they can work with any D3D 11 hardware.</p>
+<p>This allows us to create reusable shader &ldquo;libraries.&rdquo; The libraries can export functions using the &ldquo;export&rdquo; keyword:</p>
+<pre><code>export float3 DoResolve_Directional(
+    float4 position, float3 viewFrustumVector,
+    float3 worldPosition,
+    float screenSpaceOcclusion
+    MAYBE_SAMPLE_INDEX);
+</code></pre>
+<p>So, for example I can compile a library for light shapes, containing one exported function for each shape.</p>
+<p>Now, it might be nice if we could just say &ldquo;import float3 DoResolve_Directional(&hellip;)&rdquo; in another shader, right? It seems logical, but it doesn&rsquo;t seem to be supported. Anyway, we may want to be constructing our linking shader at runtime, and we don&rsquo;t really want to be compiling HLSL source at that time.</p>
+<p>However, there is another way&hellip;</p>
+<h2 id="function-linking-graph">Function Linking Graph</h2>
+<p>With the Function Linking Graph we can represent a series of function calls, and the process for passing parameters between them. This is sort of like a simplified &ldquo;abstract syntax tree&rdquo; for HLSL. It doesn&rsquo;t support any expressions or any statements other than function calls or return statements. But it&rsquo;s enough to stitch together our shader from several parts.</p>
+<p>In XLE, we want high level code to be able to select configuration options, but in an implementation independent way. And we want our solution to fit in well with our assets system (ie, supporting hot reloads and smart handling of errors, etc).</p>
+<p>The best way do this is to introduce a simple scripting language. There are 2 ways to do this</p>
+<ol>
+<li>either a declarative oriented manner (ie, we declare the function nodes and the links between them, and let the system figure out what to do with them)</li>
+<li>or a more procedural method (ie, something that is just a thin layer over the underlying ID3D11FunctionLinkingGraph methods)</li>
+</ol>
+<p>In this case, method 2 offers an efficient and more flexible solution. And the result is almost like a simplied HLSL:</p>
+<pre><code>FunctionLinkingGraph:1
+
+main = DeclareInput(
+    float4 position : SV_Position,
+    float2 texCoord : TEXCOORD0,
+    float3 viewFrustumVector : VIEWFRUSTUMVECTOR
+    {{#passSampleIndex}}, uint sampleIndex : SV_SampleIndex{{/passSampleIndex}})
+
+// Link in our main module
+// We specify a filter for defines here. This is important because some defines
+// are intended for this file (eg, for Mustache symbols) while other defines
+// need to be passed down to this module
+// It's good to be strict about this list, because the fewer defines get passed
+// done to the modules, the fewer different versions of that module we have
+libLightShape = Module(lib_lightshape.sh, GBUFFER_TYPE;MSAA_SAMPLERS;MSAA_SAMPLES;DIFFUSE_METHOD)
+libShadow = Module(lib_shadow.sh, MSAA_SAMPLERS;MSAA_SAMPLES)
+libHelper = Module(lib_helper.sh, MSAA_SAMPLERS;MSAA_SAMPLES;HAS_SCREENSPACE_AO)
+
+// The basic structure is simple:
+// 1) Calculate some inputs to the resolve operations
+// 2) Perform each resolve step
+// 3) Generate the output value by combining the resolve outputs
+//
+// Steps 1 and 3 are fixes, but step 2 varies depending on the options
+// selected for the light (ie, this is where the dynamic linking occurs)
+setup = libHelper.Setup(position, viewFrustumVector)
+worldPosition = Alias(setup.2)
+worldSpaceDepth = Alias(setup.3)
+screenSpaceOcclusion = Alias(setup.4)
+{{#passSampleIndex}}PassValue(sampleIndex, setup.5){{/passSampleIndex}}
+
+light = libLightShape.DoResolve_{{shape}}(
+    position, viewFrustumVector,
+    worldPosition, screenSpaceOcclusion
+    {{#passSampleIndex}}, sampleIndex{{/passSampleIndex}})
+
+cascade = libShadow.DoResolve_{{cascade}}(
+    position, texCoord, worldSpaceDepth)
+
+shadow = libShadow.DoResolve_{{shadows}}(
+    cascade.3, cascade.4, cascade.5,
+    position
+    {{#passSampleIndex}}, sampleIndex{{/passSampleIndex}})
+
+finalize = libHelper.FinalizeResolve(light.result, shadow.result)
+output = DeclareOutput(float4 outColour : SV_Target0)
+outColour = finalize.result
+</code></pre>
+<p>This script is read by a simple minimal parser. This parser should be quick enough to be run during runtime without major issues.</p>
+<p>As a preprocessing step, I&rsquo;m using a Mustache compliant library. This is important for performing the customization we need. The Mustache step might be a little slow. But the result should still be ok in Release builds. In debug the string handling stuff is probably a little slower than ideal.</p>
+<p>So, here we&rsquo;re basically just declaring the modules we want to link in. Then we specify the functions we want to call, and the sources for each parameter. We pass the outputs from each function down into where they are needed.</p>
+<p>We can&rsquo;t do any expressions or math or anything else here. All we can do is call functions and pass the results to output. Since this script will be compiled at runtime, perhaps a more restrictive language is actually more ideal.</p>
+<h2 id="compiled-output">Compiled output</h2>
+<p>The final compiled shader code form the stitched approach appears to be very similar to a statically linked result. There might be a little overhead in some situations (particularly since the optimizer can&rsquo;t optimize across the function call points). But it seems minimal.</p>
+<p>The stitched shader seems to use a few more temporary registers than the statically linked result (in one complex shader, the difference was 11 to 13). This may be an issue on some hardware, but maybe the benefits are worth some performance loss.</p>
+<h2 id="uncommonly-used">Uncommonly used?</h2>
+<p>ID3D11FunctionLinkingGraph doesn&rsquo;t seem to be frequently used currently. I&rsquo;m not sure why, it&rsquo;s been around for a few years, it works well and it&rsquo;s pretty useful&hellip;</p>
+<p>If I do a Google search for ID3D11FunctionLinkingGraph, I only get around 3 pages right now. And there is only one clear sample (and it&rsquo;s a bit hard to find). It&rsquo;s strange to find features that are this useful, and yet still so uncommon!</p>
+<p>Anyway, it works in XLE fine now. So maybe now XLE can serve provide an example implementation for anyone that needs it.</p>
+<h2 id="complications">Complications</h2>
+<p>There are some complications involving this method. In particular, functions can refer to global bindings (like constant buffers and resources). These must be compatible for all functions used together (ie, this often means preferring explicitly bound constant buffers and resources).</p>
+<p>Also, there are some complex shader features that aren&rsquo;t supported (like interpolation modes for input parameters). And matrices can&rsquo;t be used for input or output parameters. But maybe that kind of missing functionality isn&rsquo;t a high priority.</p>
+<p>And the scripting language is actually extremely primitive. But it seems featureful enough to support everything we want to do with it.</p>
+<p>Also we can&rsquo;t pass structures into and out of exported functions. Thats very annoying for me, because I&rsquo;ve been using structures for lots of things. In particular, they are great for hiding optional parameters (like sampleIndex in the above example). Without structures, the solution for sampleIndex is a good deal more ugly.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2015/12/functionlinkedshaders/" title="Dynamic Function Linking Graph for Shaders" target="_blank" rel="external">https://djewsbury.github.io/2015/12/functionlinkedshaders/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2015/12/rectlightdiffuse/" title="Rectangle Light diffuse vs 3DS Max"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://djewsbury.github.io/2016/01/materialtool/"
+                    title="Material and Node Diagram Tool"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

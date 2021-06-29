@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Straight Skeleton and computing it with finite precision numbers - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="Hello! The &amp;ldquo;straight skeleton&amp;rdquo; is an interesting computation geometry concept that&amp;rsquo;s not super commonly known, but has some interesting properties. I&amp;rsquo;ve just added a implementation to XLE; I&amp;rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
+Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes)." />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Straight Skeleton and computing it with finite precision numbers - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Straight Skeleton and computing it with finite precision numbers" />
+<meta property="og:description" content="Hello! The &ldquo;straight skeleton&rdquo; is an interesting computation geometry concept that&rsquo;s not super commonly known, but has some interesting properties. I&rsquo;ve just added a implementation to XLE; I&rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
+Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2021/06/straightskeleton0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-29T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-06-29T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Straight Skeleton and computing it with finite precision numbers">
+<meta itemprop="description" content="Hello! The &ldquo;straight skeleton&rdquo; is an interesting computation geometry concept that&rsquo;s not super commonly known, but has some interesting properties. I&rsquo;ve just added a implementation to XLE; I&rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
+Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes)."><meta itemprop="datePublished" content="2021-06-29T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-06-29T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1757">
+<meta itemprop="keywords" content="StraightSkeleton," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Straight Skeleton and computing it with finite precision numbers"/>
+<meta name="twitter:description" content="Hello! The &ldquo;straight skeleton&rdquo; is an interesting computation geometry concept that&rsquo;s not super commonly known, but has some interesting properties. I&rsquo;ve just added a implementation to XLE; I&rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
+Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes)."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2021/06/straightskeleton0/"
+    >Straight Skeleton and computing it with finite precision numbers</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="article-date">
+  <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/straightskeleton/"> StraightSkeleton </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1757 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 9 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>Hello! The &ldquo;straight skeleton&rdquo; is an interesting computation geometry concept that&rsquo;s not super commonly known, but has some interesting properties. I&rsquo;ve just added a implementation to XLE; I&rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).</p>
+<h2 id="definition">Definition</h2>
+<p>Imagine you have an arbitrary polygon (convex, concave, or even with internal holes). For each edge, find the direction that is perpendicular to the edge and pointing inwards into the shape (we&rsquo;ll call this the &ldquo;tangent&rdquo; of the edge). Now imagine that edge is moving along it&rsquo;s tangent, inwards into the polygon. The polygon will appear to get smaller and smaller, sometimes dividing into two. But in the end, it should eventually collapse into just a set of lines.</p>
+<p>These lines generated from the collapse, and the paths that the vertices trace out as the polygon shrinks, are called the straight skeleton.</p>
+<p>Let&rsquo;s visualize with some common shapes. A rectangle is a simple case:</p>
+<figure><img src="/media/StraightSkeleton/ss-rectangle.svg"/>
+</figure>
+
+<p>We get a moderately more complex case with a L shaped input:</p>
+<figure><img src="/media/StraightSkeleton/ss-lshape.svg"/>
+</figure>
+
+<p>Notice that the polygon is shrinking according to it&rsquo;s natural shape. We end up with something that represents the structure of the overall shape. Generally small details have little impact on the final skeleton, but the main structure will be well reflected.</p>
+<p>Also note that we&rsquo;re not scaling the polygon. Each vertex has a straight line that it&rsquo;s moving along, but this line rarely will intersect the origin. The relative length of the edges changes as time increases.</p>
+<p>Each edge is moving along its tangent at the same rate. The line that each vertex moves along is called the vertex path, and is defined by the intersection of two edges as they advance along their tangents. Any given input polygon will have one correct straight skeleton solution (exception for one minor case, which we&rsquo;ll get to in a bit).</p>
+<h2 id="collapses-and-motorcycle-crashes">Collapses and motorcycle crashes</h2>
+<p>If we take any 2 adjacent edges, we can calculate a &ldquo;velocity&rdquo; for the vertex between them. The velocity is the amount the vertex will move in a unit of time, and is in the direction of the vertex path (the blue lines above). This can be calculated with a little bit of geometric algebra &ndash; remember that the vertex movement is defined by the movement of the edges on either side of it.</p>
+<p>Vertices will continue to move according to their velocity indefinitely until an &ldquo;event&rdquo; happens that changes things. There are only 2 main types of event: one is called an &ldquo;edge collapse&rdquo; and another is called a &ldquo;motorcycle crash&rdquo;.</p>
+<p>So calculating the straight skeleton is actually pretty simple: we just calculate when the next event will be, advance time and process that event. Then find the next event, and repeat until there are no more events. Believe it or not, this is all we have to do; and it works for any given input polygon (though I&rsquo;ll cover an extension for polygons with holes below).</p>
+<h1 id="collapses">Collapses</h1>
+<p>There&rsquo;s a typical example of a collapsing edge in the rectangle case:</p>
+<figure><img src="/media/StraightSkeleton/ss-collapsing.svg"/>
+</figure>
+
+<p>Once an edge reaches zero length, it&rsquo;s considered to be &ldquo;collapsed&rdquo;, and it will be replaced with a single vertex. In the rectangle case, once the collapse is processed, we&rsquo;re finished and don&rsquo;t need to advance any further. But this isn&rsquo;t usually the case. Usually the new vertex will continue according to the same rules as any other vertex: it just traces the path between two edges. Nominally the edges connected to that vertex haven&rsquo;t actually changed direction, but that doesn&rsquo;t mean the velocity of the new vertex is the same the velocities of either of the vertices on the collapsed edge. So, all in all, we&rsquo;ll remove 2 vertices while processing this event and add back 1 new vertex.</p>
+<h1 id="motorcycle-crashes">Motorcycle crashes</h1>
+<p>I always imagine the authors that came up with this name were Tron fans.. Perhaps it&rsquo;s true. Anyway, it&rsquo;s actually a pretty descriptive name. Consider the following diagram:</p>
+<figure><img src="/media/StraightSkeleton/ss-singlemotor.svg"/>
+</figure>
+
+<p>Here, a vertex and an edge are moving towards each other on a collision course. When they &ldquo;crash&rdquo;, this will actually split the entire wavefront loop into two. We create two new vertices, one in each loop, each moving away from each other and away from the crash.</p>
+<p>If we zoom up in the middle diagram above:
+<figure><img src="/media/StraightSkeleton/ss-singlemotor2.svg"/>
+</figure>
+</p>
+<p>The extremely observant might have noticed another property here: the vertex paths for each vertex don&rsquo;t have the same length. This means the velocities of each vertex don&rsquo;t have the same magnitude. In fact the velocity of the vertex depends on the angle between its edges (more on that later).</p>
+<h1 id="colinear-adjacent-edges">Colinear adjacent edges</h1>
+<p>The math here works for any input polygon, with one exception: if there are adjacent collinear edges. The vertex path is defined by the intersection of adjacent edges; however if those edges are collinear, there are an infinite number of intersections and therefore an infinite number of possible paths. We could have to add extra rules to handle this case properly, but as we&rsquo;ll see in a moment that isn&rsquo;t quite as easy as it sounds. In general, collinearity is kryptonite to the algorithm and we should try to avoid it as much as possible.</p>
+<h2 id="tire-meeting-the-road">Tire meeting the road</h2>
+<p>In theory, these two types of events are all we need to handle in order to calculate the skeleton. We just need some code to find the next event to process and the code to handle processing it. However, of course, this isn&rsquo;t really the end of the story.</p>
+<p>I&rsquo;ve found that computational geometry algorithms like this are amongst the most annoying types of algorithms to implement and debug, and it always tends to be for the same reason. That is, the mathematical operations we&rsquo;re using have only a finite level of precision. It really is kind of shocking how quickly we build up enough error to where we don&rsquo;t know if a given point is on the left or right of a line. And in this algorithm, if we get even a single calculation like that wrong, we can get either a missed motorcycle crash or a edge narrowly missing collapse and expanding in the wrong direction (either of which will ruin the output entirely).</p>
+<p>So, the real challenge with this algorithm is implementing it for non-quantum computers with finite precision. That means coming up with a set of heuristics that can deal with the error. So, I&rsquo;ll share here the best approaches I&rsquo;ve found.</p>
+<h1 id="hex-grids">Hex grids</h1>
+<p>Some input shapes are naturally more prone to numeric precision error that others. While shapes with very soft following edges can be a little tricky, the most difficult types of shapes I&rsquo;ve come across are actually hex grids. Here&rsquo;s a diagram to demonstrate some difficult scenarios that pop up when processing hex grids:</p>
+<figure><img src="/media/StraightSkeleton/ss-hexgrid-trickiness.svg"/>
+</figure>
+
+<p>In many of these cases, we have multiple events happening at once, and sometimes multiple events happening at the same point. That should set off warning bells for precision error. Let&rsquo;s consider, for example, the case marked (A) above.</p>
+<p>Here we have 2 edges coming together, and at one end of the edges we have 2 other edges collapsing and at the other end we have to vertices motorcycling into each other. This is all happening at the same time &ndash; so in theory there are actually 4 events happening simultaneously. Those calculations are all subject to error, though, so let&rsquo;s consider what would happen if we used completely naive math:</p>
+<ul>
+<li>based on error, or random case, we&rsquo;ll decide on one specific event to process first. Let&rsquo;s imagine that event is one of the motorcycle crashes.</li>
+<li>here, the motorcycle could be crashing directly into a vertex, but we interpret that as a motorcycle vs edge crash, and the edge could be either of the two vertices connected to the other vertex</li>
+<li>when we process the motorcycle crash, we will end up with 2 vertices connected by an edge, but either on the same point, or extremely close together</li>
+<li>this creates a big problem because the tangent for that edge is extremely subject to error. It could be in almost any direction, meaning the velocities for the vertices is also very prone to error</li>
+<li>that new edge might even be collapsing &ndash; it could be expanding from it&rsquo;s original tiny length to something much larger</li>
+<li>furthermore, because the edges in the bottom circle of (A) are also collapsing, the new vertex we&rsquo;ve created as a result of the motorcycle crash is at the end of 2 edges that are collinear or almost collinear. If we attempt to calculate the velocity of a vertex that is at the bottom of a V of almost collinear edges, we&rsquo;ll end up with a value that is asymptotically huge</li>
+<li>in fact, the velocity can be massive enough that even if the edge collapses happen very briefly after the motorcycle crash, when we attempt to calculate the final position for that vertex, we can end up with something that has escaped the loop and running off to infinity</li>
+</ul>
+<p>Consider the two edges marked with (B) above</p>
+<ul>
+<li>these edges are colinear, but not adjacent</li>
+<li>however, the edges between them will collapse (ultimately becoming 2 collapses at the same time, incidentally) and at that point, they will become adjacent, while still being collinear (recall that edges move along their tangents, so edges will remain colinear if they start collinear)</li>
+<li>this has the same problems as if we have adjacent collinear edges in the initial input, and will generate infinities and incorrect outputs if not handled specially</li>
+<li>this raises the question of how to determine if 2 edges are collinear &ndash; because this will definitely require some compensation for precision error</li>
+</ul>
+<p>Hex grids also have another added problem in that, since square roots are involved in calculating the input vertices, the inputs polygon actually involves transcendental numbers. Since we&rsquo;re calculating those at finite precision, even the input geometry has built in precision error.</p>
+<p>These kinds of scenarios, and others, come up over and over again using hex grids. And it&rsquo;s easy to randomly generate input hex grids &ndash; so they make the perfect input data for testing this algorithm.</p>
+<p>if you&rsquo;re curious, here how the above shape ends up:</p>
+<figure><img src="/media/StraightSkeleton/ss-hexgrid-trickiness-2.svg"/>
+</figure>
+
+<h1 id="next-time">Next time</h1>
+<p>This is already getting pretty long, so I&rsquo;ll cut it off here for now. In the next update I&rsquo;ll describe the heuristics I&rsquo;m using, and also show some more complex examples (and maybe talk about some interesting applications of this algorithm).</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" title="Straight Skeleton and computing it with finite precision numbers" target="_blank" rel="external">https://djewsbury.github.io/2021/06/straightskeleton0/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" title="Spherical Harmonics and applications in real time graphics (part 3)"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://djewsbury.github.io/2021/06/quickupdate/"
+                    title="Quick update before a new post"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

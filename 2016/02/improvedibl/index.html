@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Improved IBL - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="I&amp;rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.
+The best way to do this is by comparing our real-time result to other renderers. So, for example, I&amp;rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&amp;rsquo;s &amp;ldquo;IRay&amp;rdquo; raytracer built-in &amp;ndash; so we can compare the non-real-time results from IRay with real-time XLE." />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Improved IBL - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Improved IBL" />
+<meta property="og:description" content="I&rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.
+The best way to do this is by comparing our real-time result to other renderers. So, for example, I&rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&rsquo;s &ldquo;IRay&rdquo; raytracer built-in &ndash; so we can compare the non-real-time results from IRay with real-time XLE." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2016/02/improvedibl/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-02-01T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2016-02-01T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Improved IBL">
+<meta itemprop="description" content="I&rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.
+The best way to do this is by comparing our real-time result to other renderers. So, for example, I&rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&rsquo;s &ldquo;IRay&rdquo; raytracer built-in &ndash; so we can compare the non-real-time results from IRay with real-time XLE."><meta itemprop="datePublished" content="2016-02-01T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2016-02-01T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2989">
+<meta itemprop="keywords" content="IBL,Lights,Specular,GGX," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Improved IBL"/>
+<meta name="twitter:description" content="I&rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.
+The best way to do this is by comparing our real-time result to other renderers. So, for example, I&rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&rsquo;s &ldquo;IRay&rdquo; raytracer built-in &ndash; so we can compare the non-real-time results from IRay with real-time XLE."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/02/improvedibl/"
+    >Improved IBL</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/02/improvedibl/" class="article-date">
+  <time datetime="2016-02-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-02-01</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/ibl/"> IBL </a>
+    <a class="article-tag-link" href="/tags/lights/"> Lights </a>
+    <a class="article-tag-link" href="/tags/specular/"> Specular </a>
+    <a class="article-tag-link" href="/tags/ggx/"> GGX </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2989 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 15 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>I&rsquo;ve been working on improving the accuracy of the Imaged Based Lighting (IBL) solution for XLE. This is the technology that allows us to load in a background panorama map and use it for both diffuse and specular lighting.</p>
+<p>The best way to do this is by comparing our real-time result to other renderers. So, for example, I&rsquo;ve been experimenting with Substance Designer (more on that later). It has nVidia&rsquo;s &ldquo;IRay&rdquo; raytracer built-in &ndash; so we can compare the non-real-time results from IRay with real-time XLE. I have other ways to do this, also &ndash; for example, the shader in ToolsHelper/BRDFSlice.sh can generate textures directly comparable with Disney&rsquo;s BRDFExplorer tool.</p>
+<p>While doing this (and working on the specular transmission stuff), I&rsquo;ve found some interesting improvements to the IBL solution!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This is a really long post; so I&rsquo;ll start with the conclusion. I&rsquo;ve made a number of improvements that make the IBL solution appear more realistic, and more similar to ray tracers.</p>
+<p><figure><img src="/media/ImprovedIBL/Spheres.png"/>
+</figure>
+
+<figure><img src="/media/ImprovedIBL/SpheresMetal.png"/>
+</figure>
+
+<figure><img src="/media/ImprovedIBL/Jamie.png"/>
+</figure>
+
+<em>&ldquo;Jamie Gnome&rdquo; model from here: <a href="http://www.turbosquid.com/3d-models/free-obj-mode-jamie-hyneman-gnome/789391">http://www.turbosquid.com/3d-models/free-obj-mode-jamie-hyneman-gnome/789391</a></em></p>
+<p>I found some errors in some source material I referenced and fixed some incorrect assumptions I made. Each change is small. But when added up, they make a big difference. The IBL specular is has a lot much punch, things are jumping off the screen better.</p>
+<p>Now, I&rsquo;ll go into detail about what&rsquo;s changed.</p>
+<h2 id="ibl-basis">IBL basis</h2>
+<p>I&rsquo;ve been using a split-term style IBL solution, as per Brian Karis' Siggraph 2013 course (see <a href="http://blog.selfshadow.com/publications/s2013-shading-course/)">http://blog.selfshadow.com/publications/s2013-shading-course/)</a>. As far as I know, this is the same method used in Unreal (though I haven&rsquo;t checked that, there may have been some changes since 2013).</p>
+<p>This splits the IBL equation into two separate equations. In one equation, we calculate the reflected light from a uniform white environment. In a sense, this is calculating our reflective a given pixel is, with equal weighting to each direction. Our solution has to make some simplifications to the BRDF (to reduce the number of variables), but we use most of it.</p>
+<h2 id="microfacets">Microfacets!</h2>
+<p>We can think about this on a microfacet level. Remember our specular equation is an approximate simulation of the microfacet detail of a surface.</p>
+<figure><img src="/media/ImprovedIBL/eyeontechfig2fibre.jpg"/>
+</figure>
+
+<p>This is a microscopic photo by <em>Gang Xiong, Durham University</em>. It shows a smooth plastic surface.</p>
+<p>Each microscopic surface has a normal &ndash; this is the microfacet normal.
+Remember that <strong>&ldquo;D&rdquo;</strong> represents how the microfacet normal are distributed, relative to the surface normal. For example, in very smooth surfaces, microfacet normals are more likely to be close to the surface normal. This is the most important part of the equation in terms of the actual shape of highlights.</p>
+<p>The <strong>&ldquo;G&rdquo;</strong> term is for microscopic scale shadowing between different microfacets. This is why <strong>G</strong> is close to 1 for most of the range and drops off to zero around the edges. It &ldquo;fights&rdquo; the <strong>F</strong> term, and prevents excessive halos around the edges of things.</p>
+<p>And <strong>&ldquo;F&rdquo;</strong> is for the fresnel effect, which determines how much incident light is actually reflected at a given angle. In the specular equation, we&rsquo;re calculating the fresnel effect on a microfacet level, not on the level of the surface normal.</p>
+<h3 id="a-little-bit-of-history">A little bit of history</h3>
+<p>Most of this stuff actually dates back to 1967 with <em>Torrance &amp; Sparrow</em>. It evolved up to around 1981 with <em>Cook &amp; Torrance</em> (yes, same Torrance). But then nothing much happened for awhile. Then <em>Walter, et al.,</em> rediscovered some old math in 2007 (and introduced the term, GGX). And we kind of discovered everything we were doing between 1981 and 2007 was a little bit wrong.</p>
+<p>More recently, <em>Brent Burley and Disney</em> found a novel way to visualize multi-parameter BRDFs in a 2D image. They used this to compare our equations to real world surfaces. And so now we have a clearer idea of what&rsquo;s really working and not working.</p>
+<p>Anyway, that&rsquo;s why specular highlights in PS4 games feel much &ldquo;brighter&rdquo; than previous generations. The shape of the highlight greatly affects the impression of brightness.</p>
+<p>There&rsquo;s a great picture here:
+<figure><img src="/media/ImprovedIBL/ggx_vs_Phong.jpg"/>
+</figure>
+</p>
+<p>The &ldquo;GGX&rdquo; dot is not any brighter&hellip; But it appears to glow because of the shape of the falloff.</p>
+<h2 id="second-split-term-part">Second split term part</h2>
+<p>Anyway, the second part of the split term equation is the environment texture itself. In XLE, this is a cubemap.</p>
+<p>Each microfacet will reflect a slightly different part of the image. And our specular equation (<strong>D</strong>, <strong>G</strong> &amp; <strong>F</strong>) effect the brightness of that particular reflection.</p>
+<p>However, in this approximation, we only know the average effect of all microfacets, and we can only afford to take a single sample of this cubemap. So, we want to pre-blur the cubemap to most closely approximate the results if we had sampled every microfacet separately.</p>
+<p>In XLE, we can use the cvar <em>&ldquo;cv.IBLRef = true&rdquo;</em> to enable a &ldquo;reference&rdquo; specular equation that samples many evenly distributed microfacets. We want to try to match that.</p>
+<h2 id="sampling-microfacets">Sampling microfacets</h2>
+<p>Since our reflection simulation is  based on the microfacet normal, in order to calculate the specular for a pixel, we want to know what microfacets there are in that pixel. But that&rsquo;s far too difficult. We can simplify it down a little bit. What we do know is the probability for the angle between the microfacet normal and the surface normal. This is the <strong>&ldquo;D&rdquo;</strong> term.</p>
+<p>For our pre-calculation steps, we sometimes need an accurate sample for a pixel. To do this, we can generate random microfacet normals, and use the <strong>D</strong> term to weight the effect of each microfacet normal. A little more on this later&hellip;</p>
+<h2 id="blurring-convolution">Blurring convolution</h2>
+<p>What is the ideal convolution to use? Brian Karis suggests a simple convolution involving <em>N dot L</em>. Previously, I was using a method suggested by another project that weights the textures by the entire specular equation. So what is the best method to use?</p>
+<p>The blurring method is actually a little similar to the reference specular equation. For every direction in the cubemap, we imagine a parallel flat surface that is reflecting that point. For roughness=0, we should get a perfectly clear reflection. As the roughness value increases, our surface should become more and more blurry. The result is actually only current for surfaces that are parallel to what they are reflecting. On the edges, the reflection should stretch out &ndash; but this phenomenon doesn&rsquo;t occur in our approximation. In practice, this is not a major issue.</p>
+<p>The roughness value affects the microfacet distribution and this is what leads to the blurriness. So, we can generate a random set of microfacets, weight them by <strong>&ldquo;D&rdquo;</strong> and then find the average of those normals. That should cause the blurriness to vary against roughness correctly.</p>
+<p>But is there better filtering than that? What is the ideal &ldquo;weight&rdquo; value for each microfacet normal?</p>
+<p>Our goals for filtering should be twofold:</p>
+<ol>
+<li>Try to replicate the &ldquo;GGX&rdquo; falloff shape. A bright pixel in the reflection should appear the same as a dynamically calculated specular highlight. The GGX falloff is also just nice, visually. So we want the falloff to match closely.</li>
+<li>Try to prevent sampling errors. This can occur when low probability samples are weighted too highly.</li>
+</ol>
+<p>I played around with this for awhile and eventually decided that there is a simple, intuitive answer to this equation.</p>
+<p>In our simple case where the surface is parallel to the reflection, when we sample the final blurred cubemap, we will be sampling in the direction of the normal. We&rsquo;re actually trying to calculate the effect of the microfacets on this reflection. So, why don&rsquo;t we just weight the microfacet normal by the ratio of the specular for the microfacet normal to the specular for the surface normal?</p>
+<p>Since the specular for the normal is constant over all samples, that factors out. And the final weighting is just the specular equation for that microfacet normal (what I mean is, we use the sampled microfacet normal as the &ldquo;half-vector&rdquo;, or <strong>M</strong>, in the full specular equation).</p>
+<p>This weighting gives us the GGX shape (because it is GGX). It also makes sense intuitively. So, in the end the best method was actually what I originally had. But now the code &amp; the reasons are a little clearer.</p>
+<h3 id="example">Example</h3>
+<p>Here is an example of a filtered specular map:
+<figure><img src="/media/ImprovedIBL/Ueno0.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Ueno1.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Ueno2.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Ueno3.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Ueno4.png"/>
+</figure>
+</p>
+<p><em>Original image from sIBL archive: <a href="http://www.hdrlabs.com/sibl/archive.html">http://www.hdrlabs.com/sibl/archive.html</a></em></p>
+<p>Notice that bright point still appears bright as they are filtered down. They are retaining the GGX shape. Also, when there are bright points, the light energy from those points will get spread out in lower mipmaps. So the bright points become successively wider but darker.</p>
+<p>Currently, we have a linear mapping from roughness -&gt; mipmap. But as you can see, often we have more resolution that we actually need. So we could change this to a non-linear mapping.</p>
+<h3 id="sampling-errors">Sampling errors</h3>
+<p>At high roughness values, we can get some sampling errors. In HDR environment textures, some pixels can be hundreds or thousands of times brighter than the average pixel. As a result, these pixels overwhelm hundreds or thousands of other pixels. Our sampling pattern attempts to cluster more samples in more areas. If a pixel like this is picked up in an &ldquo;unimportant&rdquo; area, where are are few samples, they can lead to artifacts.</p>
+<p>The following mip chain was generated from an image where the point in a middle of the sun is so bright that it can&rsquo;t be represented as a 16-bit float. This causes errors, and you can see how the errors radiate outwards according to the sampling pattern.</p>
+<p><figure><img src="/media/ImprovedIBL/Spec0.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Spec1.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Spec2.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/Spec3.png"/>
+</figure>
+</p>
+<p><em>Original image CC-Zero from <a href="http://giantcowfilms.com/">http://giantcowfilms.com/</a></em>.</p>
+<p>This particular case can only be solved by a better float32 -&gt; float16 converter than clamps values against the valid range. But it&rsquo;s a good way to visualize how a few pixels can affect many other pixels.</p>
+<p>It may be possible to get improvements by sampling every input pixel for every output pixel. This might not be such a bad idea, so if I get a chance, I&rsquo;ll try it.</p>
+<p>There&rsquo;s also another possible sampling improvement related to the <strong>&ldquo;G&rdquo;</strong> term. Using the microfacet normal rather than the surface normal could help reduce the effect of samples around the extreme edge of the sampling pattern. See <em>&ldquo;M vs N in G&rdquo;</em> below for more details on that.</p>
+<h2 id="improved-microfacet-sampling">Improved microfacet sampling</h2>
+<p>When we build the set of random microfacets, we don&rsquo;t necessarily have to distribute those microfacets evenly. We want some &ldquo;important&rdquo; microfacets to be more likely, and &ldquo;unimportant&rdquo; microfacets to be less likely.</p>
+<p>Previously, I was using the sampling pattern suggested by Karis in his course notes. However, it&rsquo;s possible that there is an error in that equation.</p>
+<p>I&rsquo;ve gone back to the original microfacet distribution function by Walter in &ldquo;Microfacet Models for Refraction through Rough Surfaces&rdquo; (the GGX paper). He built this pattern specifically for GGX, and he also designed it for both reflection and transmission. This means the view direction isn&rsquo;t considered in the distribution (which is great for us).</p>
+<p>Karis' function for generating the microfacet direction actually agrees with this paper (though it is in an optimized form). However, there is a difference in the &ldquo;Probability Density Functions&rdquo; (or PDFs) for both:</p>
+<ol>
+<li>Karis' PDF is <em>(D * NdotH) / (4.f * VdotH)</em></li>
+<li>Walter&rsquo;s PDF is <em>D * NdotH</em></li>
+</ol>
+<p>Here, Karis' PDF seems immediately suspicious because the view direction is a factor in the PDF, but not a factor in the microfacet function itself. That seems odd. The factor of &ldquo;4&rdquo; is also and area of confusion, because it appears in some versions of the Cook-Torrance microfacet equations, but not others. It&rsquo;s not clear why Karis included it, but it may be because he is using a different form of the Cook-Torrance equation to XLE?</p>
+<p>When I switched to Walter&rsquo;s sampling equations, I found 2 immediate improvements:</p>
+<h3 id="floating-point-errors-in-microfacet-function">Floating point errors in microfacet function</h3>
+<p>Karis' microfacet distribution function is not working perfectly, possibly because of floating point errors (or weird edge cases). I&rsquo;ve replaced his equation with another equation that is mathematically identically, but I get much better results.</p>
+<p>Sometimes the shader compiler&rsquo;s optimizations can change the mathematics to a point where is it visibly wrong. Could this be the case here?</p>
+<p>Old equation:
+<figure><img src="/media/ImprovedIBL/MicroFacetSamplingBad.png"/>
+</figure>
+</p>
+<p>New equation
+<figure><img src="/media/ImprovedIBL/MicroFacetSamplingGood.png"/>
+</figure>
+</p>
+<p>They should be producing the same results, but the old version appears to be producing incorrect results for inputs within a certain range. The inputs are &ldquo;dithered&rdquo; according to a 4x4 pattern in this example, which is why is appears regular.</p>
+<h3 id="edges-are-too-dark">Edges are too dark</h3>
+<p>The differences in the PDF equation are actually making the edges too dark. This is related to the <em>VdotH</em> term. It makes sense to remove <em>VdotH</em> from the PDF for two reasons:</p>
+<ol>
+<li>The view direction has no impact on the microfacets generated</li>
+<li>We want to use this sampling in view independent equations</li>
+</ol>
+<p>Old version:
+<figure><img src="/media/ImprovedIBL/MicrofacetEdgesOld.png"/>
+</figure>
+</p>
+<p>New version:
+<figure><img src="/media/ImprovedIBL/MicrofacetEdgesNew.png"/>
+</figure>
+</p>
+<p>In the new version, the extreme edges are much brighter. The dark halo we get with the old version seems unnatural &amp; incorrect.</p>
+<h2 id="ndotl">NdotL</h2>
+<p>I&rsquo;ve added the <strong>NdotL</strong> term into IBL, as well. This was previously excluded but is required to match our dynamic specular equation.</p>
+<p>This is visually important &ndash; without it, the edges become excessively bright, brighter than the thing they are reflecting. With <em>NdotL</em>, the brightness correctly matches the reflected object.</p>
+<p>In effect, we&rsquo;ve removed a <strong>VdotH</strong> term, and added a <strong>NdotL</strong>. Note that <strong>VdotH</strong> is the same as <strong>LdotH</strong> when the <strong>&ldquo;H&rdquo;</strong> is the half-vector between <strong>L</strong> and <strong>V</strong>&hellip; So this might be source for the mysterious <strong>VdotH</strong> term in Karis' PDF! He may have assumed that this was part of the PDF, when in fact he was just compensating for a part of his specular equation. If that&rsquo;s the case, though, why isn&rsquo;t it explained in his course notes?</p>
+<h2 id="rebuilding-the-lookup-table">Rebuilding the lookup table</h2>
+<p>Our split-term solution involves a texture lookup table &ldquo;glosslut.dds.&rdquo; This is built from all of the math on this page. Our previous version was very similar to Karis' version. But let&rsquo;s rebuild it, and see what happens!</p>
+<p>Old version:
+<figure><img src="/media/ImprovedIBL/OldR.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/OldG.png"/>
+</figure>
+</p>
+<p>New version:
+<figure><img src="/media/ImprovedIBL/NewR.png"/>
+</figure>
+<figure><img src="/media/ImprovedIBL/NewG.png"/>
+</figure>
+</p>
+<p>So, the changes are subtle, but important. The specular is general a little bit darker, except at the edges of objects where it has become significantly brighter.</p>
+<h3 id="comparisons">Comparisons</h3>
+<p>Old look up table:
+<figure><img src="/media/ImprovedIBL/OldGlossLUT.png"/>
+</figure>
+</p>
+<p>New look up table:
+<figure><img src="/media/ImprovedIBL/NewGlossLUT.png"/>
+</figure>
+</p>
+<p>Reference:
+<figure><img src="/media/ImprovedIBL/ReferenceIBL.png"/>
+</figure>
+</p>
+<p>This is just changing the lookup-table. You can see how the reflection is slightly darker in the new version, except that the edges are much brighter. Also, new version matches our reference image much better.</p>
+<p>At high F0 values (and along the edges) the reflection appears to be the correct brightness to match the environment.</p>
+<h3 id="alpha-remapping">Alpha remapping</h3>
+<p>One thing to note is that in XLE, the same alpha remapping is used for IBL that is used for dynamic specular maps. Karis suggests using different remapping for IBL, explaining that the normal remapping produces edges that are too dark. It seems like we&rsquo;ve discovered the true cause of the dark edges and the results seem to look fine for us with our normal remapping.</p>
+<p>Also, since we&rsquo;re using the exact same specular equation as we use for dynamic lighting, the two will also match well.</p>
+<h2 id="diffuse-normalization">Diffuse normalization</h2>
+<p>Previously, I had been assuming our texture pipeline had was premultiplying the <em>&ldquo;1/pi&rdquo;</em> diffuse normalization factor into the diffuse IBL texture. However, that turned out to be incorrect. I&rsquo;ve compensated for now by adding this term into the shader. However, I would be ideal if we could take care of this during the texture processing step.</p>
+<p>With this change (and the changes to specular brightness), the diffuse and specular are better matched. This is particularly important for surfaces that are partially metal and partially dielectric &ndash; because the diffuse on the dielectric part must feel matched when compared to the specular on the metal part.</p>
+<h2 id="further-research">Further research</h2>
+<p>Here are some more ideal for further improvements.</p>
+<h3 id="h-vs-n-in-g-calculation">H vs N in G calculation</h3>
+<p>There is an interesting problem related to the use of the normal in the &ldquo;G&rdquo; part of the specular equation. Different sources actually feed different dot products into this equation:</p>
+<ol>
+<li>Some use <strong>N dot L</strong> and <strong>N dot V</strong></li>
+<li>Others use <strong>H dot L</strong> and <strong>H dot V</strong> (where H is the half-vector or microfacet normal)</li>
+</ol>
+<p>For our dynamic specular lights, we are using a single value for <strong>N</strong> and <strong>H</strong>, so the difference should be very subtle. But when sampling multiple microfacets, we are using many different values for <strong>H</strong>, with a constant <strong>N</strong>.</p>
+<p>For example, when using the specular equation as a weight while filtering the cubemap, <strong>N dot L</strong> and <strong>N dot V</strong> are constant. So they will have no effect on the filtering.</p>
+<p>Remember that <strong>&ldquo;G&rdquo;</strong> is the shadowing term. It drops off to zero around the extreme edges. So by using <strong>H dot L</strong> and <strong>H dot V</strong>, we could help reduce the effect of extreme samples.</p>
+<p>Also, when building the split-term lookup table, <strong>N dot V</strong> is constant. So it has very little effect. It would be interesting experimenting with the other form in these cases.</p>
+<p>On the other hand, in the dynamic specular equation <strong>H dot L</strong> and <strong>H dot V</strong> should be equal and very rarely low numbers. So, in that case, it may not make sense to use the half-vector.</p>
+<h3 id="problems-when-ndotv-is--15f">Problems when NdotV is &lt; .15f</h3>
+<p>Rough objects current tend to have a few pixels around the edges that have no reflection. It&rsquo;s isn&rsquo;t really visible in the dielectric case. But with metals (where there is no diffuse) it shows up as black and looks very strange.</p>
+<p>The problem is related to how we&rsquo;re sampling the microfacet normals. As you can imagine, when normals are near perpendicular to view direction, sometimes the microfacet normal will end up pointing away from the view direction. When this happens, we can reject the sample (or calculate some value close to black). When the number of samples rejected is too high, we will end up with a result that is not accurate.</p>
+<p>This tends to only affect a few pixels, but it&rsquo;s enough to pop out. We need some better solution around these edge parts.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2016/02/improvedibl/" title="Improved IBL" target="_blank" rel="external">https://djewsbury.github.io/2016/02/improvedibl/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2016/01/transmittedspecular2/" title="Transmitted specular progress"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://djewsbury.github.io/2016/02/transmittedspecular3/"
+                    title="Transmitted specular"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AreaLights on XLE development blog</title>
+    <link>https://djewsbury.github.io/tags/arealights/</link>
+    <description>Recent content in AreaLights on XLE development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 29 Jan 2016 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://djewsbury.github.io/tags/arealights/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Quick update before a new post</title>
+      <link>https://djewsbury.github.io/2021/06/quickupdate/</link>
+      <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2021/06/quickupdate/</guid>
+      <description>Yikes; it&amp;rsquo;s been so long since I updated this that even the site generator I was using seems to have disappeared! I hit a busy phase with work, and wasn&amp;rsquo;t able to fully finish the spherical harmonics stuff. I probably got through most of the math stuff; but I never quite finished some of the applications and tricks you can do with the technique. It&amp;rsquo;s a pity, perhaps, because that would have been the fun stuff :)</description>
+    </item>
+    
+    <item>
+      <title>Straight Skeleton and computing it with finite precision numbers</title>
+      <link>https://djewsbury.github.io/2021/06/straightskeleton0/</link>
+      <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2021/06/straightskeleton0/</guid>
+      <description>Hello! The &amp;ldquo;straight skeleton&amp;rdquo; is an interesting computation geometry concept that&amp;rsquo;s not super commonly known, but has some interesting properties. I&amp;rsquo;ve just added a implementation to XLE; I&amp;rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
+Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes).</description>
+    </item>
+    
+    <item>
+      <title>Spherical Harmonics and applications in real time graphics (part 3)</title>
+      <link>https://djewsbury.github.io/2017/02/sphericalharmonics2/</link>
+      <pubDate>Sun, 12 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2017/02/sphericalharmonics2/</guid>
+      <description>This is a continuation of the tutorial on spherical harmonic applications for games. On the last page, we figured out the core math for integrating a basic diffuse BRDF with a spherical environment of incident light.
+Efficient implementation So far, we&amp;rsquo;ve been dealing with spherical harmonics fairly abstractly. But now we can get down to a concrete use and some concrete code. Given our input texture (which effectively describes a sphere of incident light on a point) we want to calculate, for a given normal direction, what is the appropriate diffuse response.</description>
+    </item>
+    
+    <item>
+      <title>Vulkan Workshop / DevU 2017</title>
+      <link>https://djewsbury.github.io/2017/01/vulkanworkshop2017/</link>
+      <pubDate>Tue, 31 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2017/01/vulkanworkshop2017/</guid>
+      <description>More on spherical harmonics is coming, but this is a slight intermission about Vulkan. Yesterday, I got a chance to attend a Vulkan workshop (called Vulkan DevU) in Vancouver, Canada. It was a short conference with talks by some of the Vulkan working group, with a mixture of both advanced and beginner sessions. You can get the slides here.
+Unfortunately, isn&amp;rsquo;t been awhile since I&amp;rsquo;ve touched the Vulkan implementation in XLE, and it wasn&amp;rsquo;t fresh in my mind &amp;ndash; but I got a chance to meet some of the working group members and ask a bunch of random questions.</description>
+    </item>
+    
+    <item>
+      <title>Spherical Harmonics and applications in real time graphics (part 2)</title>
+      <link>https://djewsbury.github.io/2017/01/sphericalharmonics1/</link>
+      <pubDate>Sun, 08 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2017/01/sphericalharmonics1/</guid>
+      <description>This is a continuation of the previous page; a tutorial for using spherical harmonic methods for real time graphics. On this page we start to dig into slightly more complex math concepts &amp;ndash; but I&amp;rsquo;ll try to keep it approachable, while still sticking to the correct concepts and terms.
+Integrating the diffuse BRDF On the previous page, we reconstructed a value from a panorama map that was compressed as a spherical harmonic.</description>
+    </item>
+    
+    <item>
+      <title>Spherical Harmonics and applications in real time graphics</title>
+      <link>https://djewsbury.github.io/2016/12/sphericalharmonics0/</link>
+      <pubDate>Tue, 27 Dec 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/12/sphericalharmonics0/</guid>
+      <description>Yikes; it&amp;rsquo;s been awhile since my last update!
+I wanted to share a little bit of information from a technique I&amp;rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &amp;ldquo;spherical harmonics&amp;rdquo; for extremely efficient high quality diffuse environment illumination.
+This is a technique that started to become popular maybe around 15 years ago &amp;ndash; possibly because of its usefulness on low power hardware.</description>
+    </item>
+    
+    <item>
+      <title>Latest Update</title>
+      <link>https://djewsbury.github.io/2016/06/juneupdate/</link>
+      <pubDate>Sun, 19 Jun 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/06/juneupdate/</guid>
+      <description>Work is still continuing on XLE! Over the last few weeks, I&amp;rsquo;ve have been very distracted by other priorities. I&amp;rsquo;m likely to be somewhat busy and distracted during for a few more weeks until things return to a more normal situation. However, I&amp;rsquo;m still finding time to work on XLE, and make some improvements and fixes!
+Lately, my focus has been on Vulkan support (in the experimental branch). Vulkan is looking more and more stable and reliable, and the HLSL -&amp;gt; SPIR-V path is working really well now!</description>
+    </item>
+    
+    <item>
+      <title>Vulkan prototype - metal layer refactoring</title>
+      <link>https://djewsbury.github.io/2016/05/metallayerrefactoring/</link>
+      <pubDate>Mon, 09 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/05/metallayerrefactoring/</guid>
+      <description>XLE has a thin layer over the underlying graphics API called &amp;ldquo;Metal&amp;rdquo;. This was originally built for DirectX11 and OpenGLES. But over time it became more DirectX-focused. Part of the goal of building in Vulkan support was to provide a basis for refactoring and improving the metal layer.
+The goals for this layer are simple:
+ compile time polymorphism between underlying graphics APIs not link time or run time. We know the target during compilation of client code &amp;ldquo;leaky&amp;rdquo; abstraction layer meaning that most client code is independent of the underlying graphics API but the underlying objects are still accessible, so client code can write API-specific code when needed very thin, minimal overhead for example, many DeviceContext methods get inlined into client code, meaning that performance is similar to using the underlying API directly  To make this kind of layer work, we need to find abstractions that work well for all target APIs.</description>
+    </item>
+    
+    <item>
+      <title>Vulkan latest progress -- core lighting working</title>
+      <link>https://djewsbury.github.io/2016/05/vulkanmoreprogress/</link>
+      <pubDate>Wed, 04 May 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/05/vulkanmoreprogress/</guid>
+      <description>The Vulkan build is steadily getting more and more functionality. Now the core rendering pipeline in SceneEngine is working &amp;ndash; which means we can have deferred lighting, shadows, IBL, tonemapping, etc. Simple scene should render correctly now. But there are some inefficiencies and issues (see below).
+Unfortunately the DirectX11 version isn&amp;rsquo;t working at the moment. This is all in the &amp;ldquo;experimental&amp;rdquo; branch.
+Declarative render passes Tone-mapping now works, and it was a good prototype for the &amp;ldquo;declarative&amp;rdquo; render pass model.</description>
+    </item>
+    
+    <item>
+      <title>Vulkan prototype - how many separate render passes in the lighting parser?</title>
+      <link>https://djewsbury.github.io/2016/04/vulkandeclarativelightingparser/</link>
+      <pubDate>Fri, 22 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkandeclarativelightingparser/</guid>
+      <description>The lighting parser is a set of steps (including geometry rendering and full screen passes) that occur in a similar order and configuration every frame. In some ways it is like a higher level version of a &amp;ldquo;renderpass&amp;rdquo; (or frame buffer layout). Each &amp;ldquo;subpass&amp;rdquo; in the renderpass is like a step in the lighting parser process for evaluating the frame.
+But how do we map the lighting parser steps onto render pass subpasses?</description>
+    </item>
+    
+    <item>
+      <title>Vulkan prototype - the big issues</title>
+      <link>https://djewsbury.github.io/2016/04/vulkanbigissues/</link>
+      <pubDate>Fri, 15 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkanbigissues/</guid>
+      <description>I&amp;rsquo;m making more progress on the Vulkan prototype. Now the SceneEngine compiles, BufferUploads works, and it&amp;rsquo;s now possible to render basic geometry. Many features aren&amp;rsquo;t supported. But the core rendering features (such as binding textures, compiling shaders, pushing geometry through the pipeline) have an early implementation.
+So, while a working Vulkan version is now close, I have a much better idea of what major hurdles there would be to get a really streamlined and efficient Vulkan implementation!</description>
+    </item>
+    
+    <item>
+      <title>Important Vulkan tips</title>
+      <link>https://djewsbury.github.io/2016/04/vulkantips/</link>
+      <pubDate>Tue, 12 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkantips/</guid>
+      <description>After 1 week of playing around with Vulkan, here are 4 tips I&amp;rsquo;ve learned. These are maybe not very obvious (some aren&amp;rsquo;t clearly documented), but I think they&amp;rsquo;re important to know.
+1. Use buffers as staging areas to initialize images The crux of this is we need to use a function, vkCmdCopyBufferToImage, to implement staging images with Vulkan. It&amp;rsquo;s almost impossible to do any graphics work with Vulkan without doing this &amp;ndash; but a first glance it might seem a bit counter-intuitive.</description>
+    </item>
+    
+    <item>
+      <title>Vulkan prototype slowly progressing</title>
+      <link>https://djewsbury.github.io/2016/04/vulkanprototypeslowprogress/</link>
+      <pubDate>Fri, 08 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkanprototypeslowprogress/</guid>
+      <description>So, the Vulkan prototype is progress&amp;hellip; But I&amp;rsquo;m running into many problems working with the drivers and the associated tools. Here&amp;rsquo;s some examples of the problems I&amp;rsquo;m finding.
+RenderDoc crashing RenderDoc is the best tool for debugging Vulkan at the moment&amp;hellip; But every time I tried to capture a log, it just crashed! The crash report didn&amp;rsquo;t contain any useful information. All I could do was guess at the problem.</description>
+    </item>
+    
+    <item>
+      <title>HLSL shader prototype with Vulkan</title>
+      <link>https://djewsbury.github.io/2016/04/vulkanshaderprototype/</link>
+      <pubDate>Tue, 05 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkanshaderprototype/</guid>
+      <description>As part of the Vulkan prototype, I&amp;rsquo;m experimenting with compiling HLSL shaders to SPIR-V.
+The Vulkan API doesn&amp;rsquo;t have a high level shader language attached. Instead, it works with a new intermediate bytecode format, called SPIR-V. This works with the LLVM compiler system, so in theory we plug in different front ends to allow various high level languages to compile to SPIR-V.
+That sounds great for the future&amp;hellip; But right now, there doesn&amp;rsquo;t seem to be a great path for generating the SPIR-V bytecode.</description>
+    </item>
+    
+    <item>
+      <title>Starting to experiment with Vulkan</title>
+      <link>https://djewsbury.github.io/2016/04/vulkan/</link>
+      <pubDate>Mon, 04 Apr 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/04/vulkan/</guid>
+      <description>So, it&amp;rsquo;s a simple story &amp;ndash; boy meets API, yada, yada, yada&amp;hellip;
+I&amp;rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &amp;ndash; and there&amp;rsquo;s an SDK from Valve (called LunarG) around.
+Initial impressions My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles).</description>
+    </item>
+    
+    <item>
+      <title>Comparing different methods for order independent transparency</title>
+      <link>https://djewsbury.github.io/2016/03/compareoitrans/</link>
+      <pubDate>Thu, 31 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/compareoitrans/</guid>
+      <description>There are has been a lot research on order independent transparency recently. There are a few screenshots comparing the following methods:
+ Sorted &amp;ndash; this mode sorts back-to-front per fragment. It&amp;rsquo;s very expensive, but serves as a reference. Stochastic &amp;ndash; as per nVidia&amp;rsquo;s Stochastic Transparency research. This uses MSAA hardware to estimate the optical depth covering a given sample. Depth weighted &amp;ndash; as per nVidia&amp;rsquo;s other white paper, &amp;ldquo;A Phenomenological Scattering Model for Order-Independent Transparency.</description>
+    </item>
+    
+    <item>
+      <title>Environment Rendering Screenshots</title>
+      <link>https://djewsbury.github.io/2016/03/envshots/</link>
+      <pubDate>Wed, 30 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/envshots/</guid>
+      <description>Here are a few screenshots of environment rendering in XLE. I don&amp;rsquo;t have a lot of art I can take screenshots of, so I can&amp;rsquo;t show a very polished scene&amp;hellip; But you can see some of the rendering features.
+Look for:
+ shallow water surface animation order independent blending for foliage volumetric fog (&amp;amp; related effects) dynamic imposters for distant trees high res terrain geometry terrain decoration spawn &amp;ldquo;contact hardening&amp;rdquo; shadows infinite terrain shadows  (see older screenshots here)</description>
+    </item>
+    
+    <item>
+      <title>Release v0.04.0</title>
+      <link>https://djewsbury.github.io/2016/03/release0040/</link>
+      <pubDate>Sat, 26 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/release0040/</guid>
+      <description>I&amp;rsquo;ve attached a compiled version of the XLE tools to the Github repo.
+This is still an early build &amp;ndash; and hasn&amp;rsquo;t be extensively tested on different hardware. So some features may not work on configurations. If you run in problems, or if you find it interesting, I recommended downloading the source and compiling for yourself.
+Download XLE v0.04.1: XLE v0.04.1 Windows x64You will need Visual C++ Redistributable Packages for Visual Studio 2013.</description>
+    </item>
+    
+    <item>
+      <title>Environment Sample Streamlining</title>
+      <link>https://djewsbury.github.io/2016/03/environmentsample/</link>
+      <pubDate>Fri, 25 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/environmentsample/</guid>
+      <description>Along with the tools improvements, I&amp;rsquo;ve added a few features to make the &amp;ldquo;Environment&amp;rdquo; sample a little easier to use.
+Exporting to the Environment sample  Start a new world Find the &amp;ldquo;palette&amp;rdquo; window and drag these objects into the main viewport:   CharacterSpawn AmbientSettings DirLight    You may want to position the character spawn and directional light using the move manipulator Save your world to some location (with &amp;ldquo;File/Save As&amp;rdquo;).</description>
+    </item>
+    
+    <item>
+      <title>Latest Tool Features</title>
+      <link>https://djewsbury.github.io/2016/03/newtoolfeatures/</link>
+      <pubDate>Mon, 14 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/newtoolfeatures/</guid>
+      <description>Here&amp;rsquo;s a rundown of some of the latest improvements to the tools. These are just a few additions and improvements made over about a week&amp;rsquo;s time.
+Search and Replace for placements Find placements using complex queries:  Once found, they can be selected from the results menu (or run a replace operation).
+Sometimes it&amp;rsquo;s useful to search for placements that use a specific model:  Grouping support for placements  Group together objects to make them easier to use.</description>
+    </item>
+    
+  </channel>
+</rss>
