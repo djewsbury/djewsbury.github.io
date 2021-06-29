@@ -5,19 +5,10 @@
     <link>https://djewsbury.github.io/categories/xle/</link>
     <description>Recent content in XLE on XLE development blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 28 Jun 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://djewsbury.github.io/categories/xle/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Quick update before a new post</title>
-      <link>https://djewsbury.github.io/2021/06/quickupdate/</link>
-      <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://djewsbury.github.io/2021/06/quickupdate/</guid>
-      <description>Yikes; it&amp;rsquo;s been so long since I updated this that even the site generator I was using seems to have disappeared! I hit a busy phase with work, and wasn&amp;rsquo;t able to fully finish the spherical harmonics stuff. I probably got through most of the math stuff; but I never quite finished some of the applications and tricks you can do with the technique. It&amp;rsquo;s a pity, perhaps, because that would have been the fun stuff :)</description>
-    </item>
     
     <item>
       <title>Straight Skeleton and computing it with finite precision numbers</title>
@@ -27,6 +18,15 @@
       <guid>https://djewsbury.github.io/2021/06/straightskeleton0/</guid>
       <description>Hello! The &amp;ldquo;straight skeleton&amp;rdquo; is an interesting computation geometry concept that&amp;rsquo;s not super commonly known, but has some interesting properties. I&amp;rsquo;ve just added a implementation to XLE; I&amp;rsquo;m not 100% sure if there are other solid implementations in open source (there may be, but last time I searched, I found implementations in commercial math packages, just not any in the open source domain).
 Definition Imagine you have an arbitrary polygon (convex, concave, or even with internal holes).</description>
+    </item>
+    
+    <item>
+      <title>Quick update before a new post</title>
+      <link>https://djewsbury.github.io/2021/06/quickupdate/</link>
+      <pubDate>Mon, 28 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2021/06/quickupdate/</guid>
+      <description>Yikes; it&amp;rsquo;s been so long since I updated this that even the site generator I was using seems to have disappeared! I hit a busy phase with work, and wasn&amp;rsquo;t able to fully finish the spherical harmonics stuff. I probably got through most of the math stuff; but I never quite finished some of the applications and tricks you can do with the technique. It&amp;rsquo;s a pity, perhaps, because that would have been the fun stuff :)</description>
     </item>
     
     <item>
