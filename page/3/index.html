@@ -245,8 +245,8 @@
                class="tag-list-count">3</span></a>
             
             
-            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
-               class="tag-list-count">1</span></a>
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="2">straightskeleton<span
+               class="tag-list-count">2</span></a>
             
             
             <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
@@ -289,6 +289,16 @@ function tagCloud(where, min, max) {
             <li>
                 <div class="item-inner">
                     <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="title">Straight Skeleton and computing it with finite precision numbers (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
                         <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
                     </p>
                     <p class="item-date">
@@ -323,16 +333,6 @@ function tagCloud(where, min, max) {
                     </p>
                     <p class="item-date">
                         <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
-                    </p>
-                </div>
-            </li>
-            <li>
-                <div class="item-inner">
-                    <p class="item-title">
-                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
-                    </p>
-                    <p class="item-date">
-                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
                     </p>
                 </div>
             </li>
@@ -458,7 +458,7 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
-                    class="tag-list-count">1</span></li>
+                    class="tag-list-count">2</span></li>
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
@@ -484,6 +484,50 @@ function tagCloud(where, min, max) {
     
     
     
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/04/vulkanshaderprototype/"
+    >HLSL shader prototype with Vulkan</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        As part of the Vulkan prototype, I&rsquo;m experimenting with compiling HLSL shaders to SPIR-V.
+The Vulkan API doesn&rsquo;t have a high level shader language attached. Instead, it works with a new intermediate bytecode format, called SPIR-V. This works with the LLVM compiler system, so in theory we plug in different front ends to allow various high level languages to compile to SPIR-V.
+That sounds great for the future&hellip; But right now, there doesn&rsquo;t seem to be a great path for generating the SPIR-V bytecode.
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/04/vulkanshaderprototype/" class="">
+  <time datetime="2016-04-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-04-05</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
+    <a class="article-tag-link" href="/tags/cross-platform/"> cross platform </a>
+    <a class="article-tag-link" href="/tags/shaders/"> shaders </a>
+    <a class="article-tag-link" href="/tags/hlsl/"> HLSL </a>
+    <a class="article-tag-link" href="/tags/spir-v/"> SPIR-V </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 757 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
+      </p>
+    </article>
     <article
       class="article article-type-page"
       itemscope
@@ -724,46 +768,6 @@ Sometimes it&rsquo;s useful to search for placements that use a specific model: 
 
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 381 words</span>
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 2 minutes </span>
-      </p>
-    </article>
-    <article
-      class="article article-type-page"
-      itemscope
-      itemtype="http://schema.org/BlogPosting"
-    >
-      <div class="article-header">
-        <h1 itemprop="name">
-  <a
-    class="article-title"
-    href="/2016/02/transmittedspecular3/"
-    >Transmitted specular</a
-  >
-</h1>
-
-      </div>
-      <div class="article-entry text-muted" itemprop="description">
-        I&rsquo;ve been playing with the transmitted specular implementation for IBL, and working on getting the right balance and visual impression for glass. Background textures from http://www.hdrlabs.com/sibl/archive.html It&rsquo;s curious to think about how terms have changed over the last few years. &ldquo;Specular transmission&rdquo; is the term I&rsquo;ve been using to talk about what we might have previously called &ldquo;refraction mapping&rdquo;, and &ldquo;specular IBL&rdquo; is the new term for &ldquo;reflection mapping.&rdquo; The
-      </div>
-      <p class="article-meta">
-<span class="article-date">
-  <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/02/transmittedspecular3/" class="">
-  <time datetime="2016-02-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-02-05</time>
-</a>
-</span>
-<span class="article-category">
-  <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/xle/"> XLE </a>
-</span>  
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/specular/"> Specular </a>
-    <a class="article-tag-link" href="/tags/ggx/"> GGX </a>
-    <a class="article-tag-link" href="/tags/ibl/"> IBL </a>
-  </span>
-
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1748 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
       </p>
     </article></div>
   

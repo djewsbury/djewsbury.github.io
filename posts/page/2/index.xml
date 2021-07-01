@@ -5,10 +5,21 @@
     <link>https://djewsbury.github.io/posts/</link>
     <description>Recent content in Posts on XLE development blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 01 Jul 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://djewsbury.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Latest Tool Features</title>
+      <link>https://djewsbury.github.io/2016/03/newtoolfeatures/</link>
+      <pubDate>Mon, 14 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/newtoolfeatures/</guid>
+      <description>Here&amp;rsquo;s a rundown of some of the latest improvements to the tools. These are just a few additions and improvements made over about a week&amp;rsquo;s time.
+Search and Replace for placements Find placements using complex queries:  Once found, they can be selected from the results menu (or run a replace operation).
+Sometimes it&amp;rsquo;s useful to search for placements that use a specific model:  Grouping support for placements  Group together objects to make them easier to use.</description>
+    </item>
     
     <item>
       <title>Transmitted specular</title>

@@ -11,6 +11,16 @@
     
     
     <item>
+      <title>Straight Skeleton and computing it with finite precision numbers (part 2)</title>
+      <link>https://djewsbury.github.io/2021/07/straightskeleton1/</link>
+      <pubDate>Thu, 01 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2021/07/straightskeleton1/</guid>
+      <description>Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&amp;rsquo;ll break down the methods and heuristics I&amp;rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&amp;rsquo;s find a &amp;ldquo;window&amp;rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &amp;ldquo;missed motorcycles&amp;rdquo; &amp;ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&amp;rsquo;s crash point.</description>
+    </item>
+    
+    <item>
       <title>Straight Skeleton and computing it with finite precision numbers</title>
       <link>https://djewsbury.github.io/2021/06/straightskeleton0/</link>
       <pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate>
@@ -204,17 +214,6 @@ Download XLE v0.04.1: XLE v0.04.1 Windows x64You will need Visual C++ Redistribu
       <guid>https://djewsbury.github.io/2016/03/environmentsample/</guid>
       <description>Along with the tools improvements, I&amp;rsquo;ve added a few features to make the &amp;ldquo;Environment&amp;rdquo; sample a little easier to use.
 Exporting to the Environment sample  Start a new world Find the &amp;ldquo;palette&amp;rdquo; window and drag these objects into the main viewport:   CharacterSpawn AmbientSettings DirLight    You may want to position the character spawn and directional light using the move manipulator Save your world to some location (with &amp;ldquo;File/Save As&amp;rdquo;).</description>
-    </item>
-    
-    <item>
-      <title>Latest Tool Features</title>
-      <link>https://djewsbury.github.io/2016/03/newtoolfeatures/</link>
-      <pubDate>Mon, 14 Mar 2016 00:00:00 +0000</pubDate>
-      
-      <guid>https://djewsbury.github.io/2016/03/newtoolfeatures/</guid>
-      <description>Here&amp;rsquo;s a rundown of some of the latest improvements to the tools. These are just a few additions and improvements made over about a week&amp;rsquo;s time.
-Search and Replace for placements Find placements using complex queries:  Once found, they can be selected from the results menu (or run a replace operation).
-Sometimes it&amp;rsquo;s useful to search for placements that use a specific model:  Grouping support for placements  Group together objects to make them easier to use.</description>
     </item>
     
   </channel>

@@ -10,6 +10,17 @@
     
     
     <item>
+      <title>Latest Tool Features</title>
+      <link>https://djewsbury.github.io/2016/03/newtoolfeatures/</link>
+      <pubDate>Mon, 14 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://djewsbury.github.io/2016/03/newtoolfeatures/</guid>
+      <description>Here&amp;rsquo;s a rundown of some of the latest improvements to the tools. These are just a few additions and improvements made over about a week&amp;rsquo;s time.
+Search and Replace for placements Find placements using complex queries:  Once found, they can be selected from the results menu (or run a replace operation).
+Sometimes it&amp;rsquo;s useful to search for placements that use a specific model:  Grouping support for placements  Group together objects to make them easier to use.</description>
+    </item>
+    
+    <item>
       <title>Transmitted specular</title>
       <link>https://djewsbury.github.io/2016/02/transmittedspecular3/</link>
       <pubDate>Fri, 05 Feb 2016 00:00:00 +0000</pubDate>

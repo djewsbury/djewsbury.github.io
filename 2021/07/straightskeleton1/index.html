@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>
-        Starting to experiment with Vulkan - XLE development blog
+        Straight Skeleton and computing it with finite precision numbers (part 2) - XLE development blog
       </title>
         <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -20,37 +20,33 @@
     <meta http-equiv="window-target" content="_top" />
     
     
-    <meta name="description" content="So, it&amp;rsquo;s a simple story &amp;ndash; boy meets API, yada, yada, yada&amp;hellip;
-I&amp;rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &amp;ndash; and there&amp;rsquo;s an SDK from Valve (called LunarG) around.
-Initial impressions My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles)." />
+    <meta name="description" content="Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&amp;rsquo;ll break down the methods and heuristics I&amp;rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&amp;rsquo;s find a &amp;ldquo;window&amp;rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &amp;ldquo;missed motorcycles&amp;rdquo; &amp;ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&amp;rsquo;s crash point." />
     <meta name="generator" content="Hugo 0.84.2 with theme pure" />
-    <title>Starting to experiment with Vulkan - XLE development blog</title>
+    <title>Straight Skeleton and computing it with finite precision numbers (part 2) - XLE development blog</title>
     
     
     <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
     
     <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
-    <meta property="og:title" content="Starting to experiment with Vulkan" />
-<meta property="og:description" content="So, it&rsquo;s a simple story &ndash; boy meets API, yada, yada, yada&hellip;
-I&rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &ndash; and there&rsquo;s an SDK from Valve (called LunarG) around.
-Initial impressions My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles)." />
+    <meta property="og:title" content="Straight Skeleton and computing it with finite precision numbers (part 2)" />
+<meta property="og:description" content="Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&rsquo;ll break down the methods and heuristics I&rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&rsquo;s find a &ldquo;window&rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &ldquo;missed motorcycles&rdquo; &ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&rsquo;s crash point." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://djewsbury.github.io/2016/04/vulkan/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2016-04-04T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2016-04-04T00:00:00&#43;00:00" />
+<meta property="og:url" content="https://djewsbury.github.io/2021/07/straightskeleton1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-01T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-07-01T00:00:00&#43;00:00" />
 
-<meta itemprop="name" content="Starting to experiment with Vulkan">
-<meta itemprop="description" content="So, it&rsquo;s a simple story &ndash; boy meets API, yada, yada, yada&hellip;
-I&rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &ndash; and there&rsquo;s an SDK from Valve (called LunarG) around.
-Initial impressions My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles)."><meta itemprop="datePublished" content="2016-04-04T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2016-04-04T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="663">
-<meta itemprop="keywords" content="Vulkan,rendering,API,cross platform," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Starting to experiment with Vulkan"/>
-<meta name="twitter:description" content="So, it&rsquo;s a simple story &ndash; boy meets API, yada, yada, yada&hellip;
-I&rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &ndash; and there&rsquo;s an SDK from Valve (called LunarG) around.
-Initial impressions My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles)."/>
+<meta itemprop="name" content="Straight Skeleton and computing it with finite precision numbers (part 2)">
+<meta itemprop="description" content="Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&rsquo;ll break down the methods and heuristics I&rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&rsquo;s find a &ldquo;window&rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &ldquo;missed motorcycles&rdquo; &ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&rsquo;s crash point."><meta itemprop="datePublished" content="2021-07-01T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-07-01T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2814">
+<meta itemprop="keywords" content="StraightSkeleton," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Straight Skeleton and computing it with finite precision numbers (part 2)"/>
+<meta name="twitter:description" content="Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&rsquo;ll break down the methods and heuristics I&rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&rsquo;s find a &ldquo;window&rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &ldquo;missed motorcycles&rdquo; &ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&rsquo;s crash point."/>
 
     <!--[if lte IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -506,8 +502,8 @@ function tagCloud(where, min, max) {
       <h1 itemprop="name">
   <a
     class="article-title"
-    href="/2016/04/vulkan/"
-    >Starting to experiment with Vulkan</a
+    href="/2021/07/straightskeleton1/"
+    >Straight Skeleton and computing it with finite precision numbers (part 2)</a
   >
 </h1>
 
@@ -515,48 +511,96 @@ function tagCloud(where, min, max) {
         
 <span class="article-date">
   <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/04/vulkan/" class="article-date">
-  <time datetime="2016-04-04 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-04-04</time>
+<a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="article-date">
+  <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
 </a>
 </span>
 <span class="article-category">
   <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
 </span>  
   <span class="article-tag">
     <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
-    <a class="article-tag-link" href="/tags/rendering/"> rendering </a>
-    <a class="article-tag-link" href="/tags/api/"> API </a>
-    <a class="article-tag-link" href="/tags/cross-platform/"> cross platform </a>
+    <a class="article-tag-link" href="/tags/straightskeleton/"> StraightSkeleton </a>
   </span>
 
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 663 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2814 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 14 minutes </span>
       </div>
     </div>
     <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
-      <p>So, it&rsquo;s a simple story &ndash; boy meets API, yada, yada, yada&hellip;</p>
-<p>I&rsquo;ve started to build some initial experiments with the Vulkan API. Version 1.0 of the API was just released &ndash; and there&rsquo;s an SDK from Valve (called LunarG) around.</p>
-<h2 id="initial-impressions">Initial impressions</h2>
-<p>My first impressions are very positive! Many of the design ideals and structures of the API are familiar from my days working with consoles (particularly the Sony consoles). This type of API has not been available on open platforms (like Windows) before &ndash; so for people who don&rsquo;t have experience with consoles, it might give an idea of what it&rsquo;s like.</p>
-<p>I&rsquo;m also really happy how much of the surrounding resources have been made open-source&hellip; The samples, shader compilation tool-chain, etc&hellip; It&rsquo;s all very effective use of github.</p>
-<p>Khronos have drawn attention to how much input they&rsquo;ve gotten from the game engine development community. And it shows in the results. This is the kind of API that an experienced engine developer wants to see.</p>
-<p>I think it&rsquo;s also a model that is much more viable for cross platform development than anything we&rsquo;ve seen before. OpenGL had a lot of problems, and DirectX was so tied to the Windows platform. But this feels like something that is truly viable across many platforms (including low end and high end).</p>
-<p>I&rsquo;m really impressed with how a third party group has managed to build an API that balances the needs of engine developers with the needs of hardware designers. I think Khronos has really shown how this kind of thing should be done &ndash; and it seems like a good model for other APIs (sound, physics hardware, etc).</p>
-<h2 id="long-term-viability">Long term viability</h2>
-<p>Vulkan feels like an API that could stick around for awhile. OpenGL has been on it&rsquo;s last legs for a long time&hellip; And DirectX always needs constant refreshes to survive. But Vulkan feels like it will be here for awhile. Due to it&rsquo;s cross-platform and long term viability, it&rsquo;s really undermined DirectX and Apple&rsquo;s Metal.</p>
-<p>I felt the same about C++11, when I started using it. The new C++14 is a huge step forward from the old C++98 days. Many of the design patterns we C++ programmers always wanted to use are not much more viable in C++14. Stroustrup said that C++14 &ldquo;completes&rdquo; C++11 &ndash; but really, I think it &ldquo;completes&rdquo; C++ as a whole.</p>
-<p>C++17, C++20 &ndash; these are going to be even better, also. And Vulkan will get better over time. But my gut feeling is that code written in C++14 and Vulkan 1.0 is likely to be viable for a very long time.</p>
-<p>By comparison, code written in OpenGL, Apple&rsquo;s Metal (or, help us, DirectX9) is going to feel stale pretty quickly.</p>
-<p>The unfinished part of the equation is the shader language. Vulkan uses SPIR-V as an intermediate language&hellip; And that&rsquo;s great. But it&rsquo;s not clear yet what high level language should be used. The current SDK uses GLSL &ndash; but maybe we could do better? Perhaps C++ is an option here&hellip; But maybe we would be better off with some next iteration forward from HLSL and GLSL.</p>
-<h2 id="but-its-not-easy">But it&rsquo;s not easy!</h2>
-<p>Clearly, Vulkan is not intended as a beginner&rsquo;s API. DirectX always tried to find a balance between power and accessibility for it&rsquo;s API. But Vulkan is designed by and for experienced developers.</p>
-<p>This is clearest in the threading and reference counting approaches. Vulkan is mostly leaving it up to the engine developer to handle these things. That&rsquo;s great when you want to write a really efficient engine&hellip; But it&rsquo;s going to be a major hassle for first timers.</p>
-<h2 id="xle-code">XLE code</h2>
-<p>You can see the Vulkan code in the <em>&ldquo;experimental&rdquo;</em> branch.</p>
-<p>I will be adapting and improving platform abstraction layer in XLE as I plug in Vulkan features. Fortunately, it seems that the XLE architecture should mostly work well with Vulkan.</p>
-<p>I will also try to use HLSL with Vulkan by cross-compiling first to GLSL and then to SPIR-V.</p>
+      <h1 id="dealing-with-floating-point-precision">Dealing with floating point precision</h1>
+<p>Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&rsquo;ll break down the methods and heuristics I&rsquo;m using to try to calculate the skeleton for complex shapes.</p>
+<h2 id="calculation-windows">Calculation windows</h2>
+<figure><img src="/media/StraightSkeleton/ss-calculation-window.svg"/>
+</figure>
+
+<p>Instead of process edge event completely independently, let&rsquo;s find a &ldquo;window&rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &ldquo;missed motorcycles&rdquo; &ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&rsquo;s crash point. A missed motorcycle like this causes the edges of the wavefront to cross each other. This results in a shape that is unsolvable, and typically the entirely skeleton is ruined.</p>
+<h3 id="near-simultaneous-events">Near simultaneous events</h3>
+<p>Imagine that we have two events, A and B, which occur almost at the same calculated time, but B is some tiny amount of time later. A and B have both use some of the same vertices and edges in some way. The naive solution calculates A first, and then scans the resultant shape for the next event that should happen. Commonly, we&rsquo;ll still find event B and proceed, and everything is fine. However, if the time difference between the events is small enough, the precision error related to processing A can be enough so that when we calculate B the second time, we now find that it happens slightly earlier than A (rather than after it).</p>
+<p>Now we have a bit of a dilemma &ndash; do we assume that events that happen minutely before the last processed event are subject to precision error and still need to be processed? If so how big should that window big. How do we handle cases such as the 2 new vertices generated by a motorcycle crash event &ndash; these are generated on the same point and moving away from each other, so can be calculated as crashing into each other minutely in the past? (those vertices are generated on separate wavefronts, but as we&rsquo;ll see that doesn&rsquo;t solve this issue entirely).</p>
+<p>This is one way in which the calculation window helps, as described a little below.</p>
+<h3 id="chains-of-collapses">Chains of collapses</h3>
+<p>In the hex grid case, we often get multiple adjacent edges collapsing at the same time and point. Let&rsquo;s imagine two collapse events, A and B, like this. If we calculate collapse A, we end up generate a vertex at the collapse point. That vertex will happen to be exactly where B is collapsing to (since both edges collapse at the same point). This means we&rsquo;ve generated an infinitesimally short edge. If the length of an edge is less than or near the error of it&rsquo;s vertices, that means we can&rsquo;t accurately calculate the edge tangent, which also means we can&rsquo;t calculate the paths for the vertices nor the collapse point of the edge (meaning we might miss a collapse).</p>
+<p>In the hex grid case, this gets even worse when we have a motorcycle crash happening at the same point and time as a the collapses. Here the motorcycle crash can be calculated to happen before the collapses, between the collapses or after the collapses; each of which can cause different problems.</p>
+<h3 id="maintaining-the-calculation-window">Maintaining the calculation window</h3>
+<p>Every iteration we generate a list of the next few events that happen on a wavefront. We&rsquo;ll accept all of the events, up until the gap between successive events exceeds some threshold (which will be very tiny). Now:</p>
+<ul>
+<li>we will process each and every event on this list, regardless of how one event impacts others</li>
+<li>we will process them mostly in order (but with some small reordering covered below)</li>
+<li>while processing the window, new vertices generated are considered to be frozen in place (ie, we don&rsquo;t even bother generating vertex velocities until all events are processed)</li>
+</ul>
+<p>Frequently, events that occur within this window are going to involve the same vertices and edges. So, when one event is processed that removed edges or vertices, we must adjust the other events in the window to take into account these cases. The simplest example of this is when a motorcycle crash is occurring on an edge that is simultaneously collapsing. If we process the collapse first, we must update the motorcycle crash event to now be crashing with the newly created collapse vertex (see the special case for motorcycle-vs-vertex below).</p>
+<p>This gets a little more complex with the full range of events that can occur; but this is essential to ensure that every event within the window is actually calculated.</p>
+<h3 id="processing-collapse-chains">Processing collapse chains</h3>
+<p>As mentioned before, when adjacent edges are collapsing simultaneously we should process them together and generate a single collapse vertex from the result. We still have a separate event in the calculation window for each collapse, but when processing a collapse we will look for collapses on adjacent edges that occur at any point in the event window.</p>
+<p>This is the only time we actually process events out-of-order. In the case where a motorcycle crash involving the same edges is calculated between the collapse events, this would splitting the collapse processing and end up generating a lot of overlapping points. Instead, once we start processing edge collapses, we just make sure we process all adjacent events that occur within the calculation window. Each chain then generates just a single new collapse vertex, rather than one new vertex per collapsed edge.</p>
+<h2 id="special-case-for-motorcycle-vs-vertex">Special case for motorcycle-vs-vertex</h2>
+<p>Naively, motorcycle crashes are a vertex vs edge operation. However, as mentioned earlier, when motorcycle intersects another vertex very closely, there can be ambiguity about which side of the vertex it is really on, and therefore which edge to use. Furthermore, this risks generated infinitesimal short edges. So we need to introduce a special case for motorcycle-vs-vertex, wherein we imagine the vertices as small circles (that is, with the radius begin their error). This adds some complexity the motorcycle crash processing, but fortunately it doesn&rsquo;t impact much else.</p>
+<h2 id="generate-velocity-from-collapse-events">Generate velocity from collapse events</h2>
+<p>The calculations for vertex velocity, edge collapse points and motorcycle crash events are all fairly similar &ndash; they all basically boil down to edges moving along their tangents in different ways. However they are subject to precision error in different ways, meaning that we can end up with results that don&rsquo;t agree with each other.</p>
+<p>This can be an issue with vertices attached to very small edges, or edges with very acute angles between them. In these cases our accuracy is lowest and the likelihood of disagreements is highest.</p>
+<p>In an ideal world, the collapse points for an edge should be exactly on the path traced by both it&rsquo;s vertices. So, in order to minimize disagreement, we can use the edge collapse point and time directly as a way to calculate the vertex velocity. This raises a problem, though, in that all vertices are connected to two edges &ndash; so which collapse do we use? They should actually both be along the same vertex path, but one might have better precision than the other. I found that just using the soonest event was fine.</p>
+<p>It also helps to use this calculated velocity in the calculation of motorcycle crashes. It is possible to calculate the motorcycle crash point directly from vertex points themselves (without using this secondarily derived velocity property). However, in order to ensure that collision point is as close to our calculated vertex path as possible, I found it was more reliable to look for crashes along the calculated vertex velocity. This also inherits the special cases for collinearity mentioned below.</p>
+<h2 id="special-cases-for-collinear-edges">Special cases for collinear edges</h2>
+<p>As mentioned earlier, the vertex velocity calculations do not hold up under the presence of collinear edges. Furthermore, we end up with very large precision error in near-collinear cases. We can do our best to try to avoid this type of geometry entering the calculations, but we still need some special cases to avoid extreme cases.</p>
+<p>There are 2 problems to be wary of:</p>
+<ol>
+<li>edges that make a straight or nearly-straight line, with the vertex somewhere in the middle</li>
+<li>edges meeting in an extremely acute angle, like the vertex of a V squished horizontally</li>
+</ol>
+<p>In case (1), there are infinite valid velocities. We need a special case to ensure we get the velocity that is the most intuitive (ie, just moving with the tangent of the combined straight edge). In case (2) we approach an asymptote where the velocity is infinite.</p>
+<p>To determine &ldquo;near collinearity&rdquo; we need some kind of epsilon/threshold value. This and the calculating window size are probably the main places where we use epsilon values. I found the best approach was to filter out case (1) before running the standard velocity calculation math, but to still calculate case (2) with the standard math. This will allow some very high velocities to enter the calculation occasionally. The calculation window actually helps resolve the worst cases of these, though &ndash; recall the edges with a collapse event at one end and a motorcycle crash event at the other mentioned in the previous page? These cases can result in extreme acute angles; but since both events will fall within the same calculation window, and since we don&rsquo;t update velocities during a calculation window, we can side step the issue.</p>
+<h2 id="collapses-leading-to-collinearity">Collapses leading to collinearity</h2>
+<p>As mentioned above, sometimes non-adjacent collinear edges can become adjacent as a result of edge collapses between them. Adjacent collinear edges created in this fashion are at least as problematic as if they were part of the input data; so we have to do something about them.</p>
+<p>Consider the hex grid skeleton from last time:</p>
+<figure><img src="/media/StraightSkeleton/ss-hexgrid-trickiness-2.svg"/>
+</figure>
+
+<p>Here if we look at a part in detail, we can see an example of this</p>
+<figure><img src="/media/StraightSkeleton/ss-collinear-collapse.svg"/>
+</figure>
+
+<p>One option here is to just place the vertex at the collapse location as usual, and calculate it&rsquo;s velocity as the tangent of the straight edge that it is on. This adds some extra complexity, however, because as soon as we introduce the possibility of collinear adjacent edges, we need to handle that case in almost all of the calculations. That includes new special cases in both the edge collapse and motorcycle crash detection code.</p>
+<p>Another option is to just not include that collapse vertex at all. The collapse vertex would follow the path in the dotted line shown, but &ndash; as will become clearer soon &ndash; this vertex doesn&rsquo;t actually have any practical impact on the output result. In fact the output has all of the same properties if it&rsquo;s there or if it&rsquo;s not there.</p>
+<p>So I elected to simply remove it from the wavefront, which means joining the 2 edges to either side of the collapse into a single edge. We use the same near collinearity detection as mentioned above. This also has a positive side-effect in that very short edges will be detected as collinear to many other edges, which can sometimes mean collapsing down problematic geometry before it causes any real problems.</p>
+<p>That sounds great; but as it always seems to be with this algorithm, even this scenario introduces it&rsquo;s own special cases. You may notice that removing that dotted line in the above diagram means that two of the grey input edges become connected by one shape in the diagram. This is actually significant, and this is the only case in which is can happen. So we can to record this so we can use it later.</p>
+<h2 id="avoid-changing-vertices-after-they-are-constructed">Avoid changing vertices after they are constructed</h2>
+<p>Whenever we create a new vertex and connect it up via edges, we will need to calculate its velocity and resultant path. The velocity related to the collapse points of the connected edges, which is something we&rsquo;ll need to calculate also. In the edge collapse case, this should be relatively trivial, because a collapse should not change the tangent or collapse point of any other edge. But consider the motorcycle crash case, where we introduce edges that are entirely new, and so their collapse points and attached vertex velocities need to be calculated from scratch.</p>
+<p>So, for each of the new edges, we&rsquo;ll calculate its tangent and use this to determine all of the properties we need to calculate. To get this tangent, we need the position of the vertex at the same point in time. Since we don&rsquo;t know the velocity of any newly created vertices just yet, we&rsquo;ll set that point in time to be the time of the crash event itself. Then we can calculate the collapse points and from those collapse points we&rsquo;ll find the velocity of the new vertices.</p>
+<p>This introduces an interesting loop &ndash; we use vertex velocities to calculate edge collapses, and edge collapses to calculate vertex velocities. This runs into the compounding error problems mentioned previously. The newly generated vertices are very likely to be involved with future events, which will mean that their velocities will be required for generating tangents for future edges.</p>
+<p>It may seem tempting to advance all vertices on the wavefront forward to the time of the event and then find the new positions and recalculate future collapses and motorcycle crashes based on this. In theory, this is valid because the loop created at every subsequent step should still be a valid input loop to the algorithm. However, this will most likely to compound precision error over time and might result in a final shape that is a bit distorted.</p>
+<p>Instead I never recalculate the positions or velocities of vertices after they are first calculated. This means that even if a vertex is involved in many events, so long as it is never removed it will still have the same properties as when it was created (even if it was a vertex from the original input loop).</p>
+<p>Also note that since we can calculate many events within a calculation window, and don&rsquo;t update the velocities until the end of the window, we can create situations where both vertices of an edge were generated in the same window by different events. This means the vertices will have different initial times, but we won&rsquo;t have a velocity to align them in time. In these cases we treat the vertices as if they were created at exactly the same time and assume that the different in calculated tangent would be within the error threshold anyway.</p>
+<h2 id="calculating-epsilons">Calculating epsilons</h2>
+<p>In some cases (such as the near collinearity checks) we need an epsilon value to represent the quantity of error we think is in the calculated results. This determines when we can be confident about a calculation and when it falls into the realm of uncertainty. This is mostly used for the collinearity checks and for calculation window. Given the way that I&rsquo;m using &ldquo;time&rdquo; here, time and space have the same units, so the epsilon values in these cases also have the same units.</p>
+<p>I&rsquo;ve ended up just using a fixed value for this. That may not be perfectly ideal. In theory is should at least scale based on the size of the input shape, I guess. But this may be a case where the simple solution is actually the best.</p>
+<p>It may be possible to do a little better &ndash; for example, we could calculate the amount of error that the underlying calculations (eg, collapse point determination) can deal with before they generate poor results. Or alternatively we could assign an epsilon value per vertex, and calculate this based on the amount of precision we get from the calculations used to generate that vertex. That might help with the compounding error problem; but it could also make things more complicated.</p>
+<h1 id="summary">Summary</h1>
+<p>It took some time to figure out all of these little details and heuristics, I had to try out quite a few different possible approaches to some of the problems before settling these solutions; but these are what have gotten the best results for me. All of the difficult scenarios described in part one can be handled.</p>
+<p>Often I found that what seemed like the simplest solution to precision errors &ndash; such as &ldquo;magnetting&rdquo; together close vertices &ndash; actually ended up causing more problems. So there&rsquo;s often a kind of conflict between ignoring differences within error thresholds (such as collinearity checks, collapse event reordering, motor vs vertex) and trying to maintain as much precision as possible. It is kind of interesting how impactful precision error is on this algorithm in particular. It plays a big part in many computational geometry algorithms; but here we seem to have a combination of calculations converging on the same values while also having a lot of cases (such as a missed motorcycle or missed collapse) that will instantly ruin the output if the precision we need falls under the error thresholds.</p>
+<h1 id="next-time">Next time</h1>
+<p>There&rsquo;s still a little to cover &ndash; next time cover calculating skeletons for different types of shapes (such as silhouettes created in art packages) and some applications in 3d.</p>
 
     </div>
     <div class="article-footer">
@@ -564,7 +608,7 @@ function tagCloud(where, min, max) {
   <ul class="post-copyright list-unstyled">
     <li class="post-copyright-link hidden-xs">
       <strong>Permalink: </strong>
-      <a href="https://djewsbury.github.io/2016/04/vulkan/" title="Starting to experiment with Vulkan" target="_blank" rel="external">https://djewsbury.github.io/2016/04/vulkan/</a>
+      <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" title="Straight Skeleton and computing it with finite precision numbers (part 2)" target="_blank" rel="external">https://djewsbury.github.io/2021/07/straightskeleton1/</a>
     </li>
     <li class="post-copyright-license">
       <strong>License: </strong>
@@ -595,14 +639,9 @@ function tagCloud(where, min, max) {
     <div class="bar-inner">
         <ul class="pager pull-left">
             <li class="prev">
-                <a href="https://djewsbury.github.io/2016/03/compareoitrans/" title="Comparing different methods for order independent transparency"><i
+                <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" title="Straight Skeleton and computing it with finite precision numbers"><i
                         class="icon icon-angle-left"
                         aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
-            </li>
-            <li class="next">
-                <a href="https://djewsbury.github.io/2016/04/vulkanshaderprototype/"
-                    title="HLSL shader prototype with Vulkan"><span>Newer&nbsp;&nbsp;</span><i
-                        class="icon icon-angle-right" aria-hidden="true"></i></a>
             </li>
             
             <li class="toggle-toc">

@@ -245,8 +245,8 @@
                class="tag-list-count">3</span></a>
             
             
-            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
-               class="tag-list-count">1</span></a>
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="2">straightskeleton<span
+               class="tag-list-count">2</span></a>
             
             
             <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
@@ -289,6 +289,16 @@ function tagCloud(where, min, max) {
             <li>
                 <div class="item-inner">
                     <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="title">Straight Skeleton and computing it with finite precision numbers (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
                         <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
                     </p>
                     <p class="item-date">
@@ -323,16 +333,6 @@ function tagCloud(where, min, max) {
                     </p>
                     <p class="item-date">
                         <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
-                    </p>
-                </div>
-            </li>
-            <li>
-                <div class="item-inner">
-                    <p class="item-title">
-                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
-                    </p>
-                    <p class="item-date">
-                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
                     </p>
                 </div>
             </li>
@@ -458,7 +458,7 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
-                    class="tag-list-count">1</span></li>
+                    class="tag-list-count">2</span></li>
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
@@ -484,6 +484,45 @@ function tagCloud(where, min, max) {
     
     
     
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2021/07/straightskeleton1/"
+    >Straight Skeleton and computing it with finite precision numbers (part 2)</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        Dealing with floating point precision Last time I described the straight skeleton algorithm, and write about how precision error can impact calculation. Here, I&rsquo;ll break down the methods and heuristics I&rsquo;m using to try to calculate the skeleton for complex shapes.
+Calculation windows  Instead of process edge event completely independently, let&rsquo;s find a &ldquo;window&rdquo; of near simultaneous events to calculate each step. I found that without this, we could often get &ldquo;missed motorcycles&rdquo; &ndash; essentially a motorcycle crash should have happened, but never did, and the vertex proceeds along past it&rsquo;s crash point.
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="">
+  <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/straightskeleton/"> StraightSkeleton </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2814 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 14 minutes </span>
+      </p>
+    </article>
     <article
       class="article article-type-page"
       itemscope
@@ -519,8 +558,8 @@ Definition Imagine you have an arbitrary polygon (convex, concave, or even with 
     <a class="article-tag-link" href="/tags/straightskeleton/"> StraightSkeleton </a>
   </span>
 
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1757 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 9 minutes </span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2127 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
       </p>
     </article>
     <article
@@ -719,45 +758,6 @@ This is a technique that started to become popular maybe around 15 years ago &nd
 
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2119 words</span>
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
-      </p>
-    </article>
-    <article
-      class="article article-type-page"
-      itemscope
-      itemtype="http://schema.org/BlogPosting"
-    >
-      <div class="article-header">
-        <h1 itemprop="name">
-  <a
-    class="article-title"
-    href="/2016/06/juneupdate/"
-    >Latest Update</a
-  >
-</h1>
-
-      </div>
-      <div class="article-entry text-muted" itemprop="description">
-        Work is still continuing on XLE! Over the last few weeks, I&rsquo;ve have been very distracted by other priorities. I&rsquo;m likely to be somewhat busy and distracted during for a few more weeks until things return to a more normal situation. However, I&rsquo;m still finding time to work on XLE, and make some improvements and fixes!
-Lately, my focus has been on Vulkan support (in the experimental branch). Vulkan is looking more and more stable and reliable, and the HLSL -&gt; SPIR-V path is working really well now!
-      </div>
-      <p class="article-meta">
-<span class="article-date">
-  <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/06/juneupdate/" class="">
-  <time datetime="2016-06-19 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-06-19</time>
-</a>
-</span>
-<span class="article-category">
-  <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/xle/"> XLE </a>
-</span>  
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
-  </span>
-
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 339 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 2 minutes </span>
       </p>
     </article></div>
   

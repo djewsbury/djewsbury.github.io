@@ -245,8 +245,8 @@
                class="tag-list-count">3</span></a>
             
             
-            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="1">straightskeleton<span
-               class="tag-list-count">1</span></a>
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="2">straightskeleton<span
+               class="tag-list-count">2</span></a>
             
             
             <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
@@ -289,6 +289,16 @@ function tagCloud(where, min, max) {
             <li>
                 <div class="item-inner">
                     <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="title">Straight Skeleton and computing it with finite precision numbers (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
                         <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
                     </p>
                     <p class="item-date">
@@ -323,16 +333,6 @@ function tagCloud(where, min, max) {
                     </p>
                     <p class="item-date">
                         <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
-                    </p>
-                </div>
-            </li>
-            <li>
-                <div class="item-inner">
-                    <p class="item-title">
-                        <a href="https://djewsbury.github.io/2017/01/sphericalharmonics1/" class="title">Spherical Harmonics and applications in real time graphics (part 2)</a>
-                    </p>
-                    <p class="item-date">
-                        <time datetime="2017-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-08</time>
                     </p>
                 </div>
             </li>
@@ -458,7 +458,7 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
-                    class="tag-list-count">1</span></li>
+                    class="tag-list-count">2</span></li>
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
@@ -484,6 +484,45 @@ function tagCloud(where, min, max) {
     
     
     
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/06/juneupdate/"
+    >Latest Update</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        Work is still continuing on XLE! Over the last few weeks, I&rsquo;ve have been very distracted by other priorities. I&rsquo;m likely to be somewhat busy and distracted during for a few more weeks until things return to a more normal situation. However, I&rsquo;m still finding time to work on XLE, and make some improvements and fixes!
+Lately, my focus has been on Vulkan support (in the experimental branch). Vulkan is looking more and more stable and reliable, and the HLSL -&gt; SPIR-V path is working really well now!
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/06/juneupdate/" class="">
+  <time datetime="2016-06-19 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-06-19</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 339 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 2 minutes </span>
+      </p>
+    </article>
     <article
       class="article article-type-page"
       itemscope
@@ -730,50 +769,6 @@ RenderDoc crashing RenderDoc is the best tool for debugging Vulkan at the moment
 
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 933 words</span>
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 5 minutes </span>
-      </p>
-    </article>
-    <article
-      class="article article-type-page"
-      itemscope
-      itemtype="http://schema.org/BlogPosting"
-    >
-      <div class="article-header">
-        <h1 itemprop="name">
-  <a
-    class="article-title"
-    href="/2016/04/vulkanshaderprototype/"
-    >HLSL shader prototype with Vulkan</a
-  >
-</h1>
-
-      </div>
-      <div class="article-entry text-muted" itemprop="description">
-        As part of the Vulkan prototype, I&rsquo;m experimenting with compiling HLSL shaders to SPIR-V.
-The Vulkan API doesn&rsquo;t have a high level shader language attached. Instead, it works with a new intermediate bytecode format, called SPIR-V. This works with the LLVM compiler system, so in theory we plug in different front ends to allow various high level languages to compile to SPIR-V.
-That sounds great for the future&hellip; But right now, there doesn&rsquo;t seem to be a great path for generating the SPIR-V bytecode.
-      </div>
-      <p class="article-meta">
-<span class="article-date">
-  <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/04/vulkanshaderprototype/" class="">
-  <time datetime="2016-04-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-04-05</time>
-</a>
-</span>
-<span class="article-category">
-  <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/xle/"> XLE </a>
-</span>  
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
-    <a class="article-tag-link" href="/tags/cross-platform/"> cross platform </a>
-    <a class="article-tag-link" href="/tags/shaders/"> shaders </a>
-    <a class="article-tag-link" href="/tags/hlsl/"> HLSL </a>
-    <a class="article-tag-link" href="/tags/spir-v/"> SPIR-V </a>
-  </span>
-
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 757 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
       </p>
     </article></div>
   
