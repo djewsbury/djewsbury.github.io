@@ -245,8 +245,8 @@
                class="tag-list-count">3</span></a>
             
             
-            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="2">straightskeleton<span
-               class="tag-list-count">2</span></a>
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="3">straightskeleton<span
+               class="tag-list-count">3</span></a>
             
             
             <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
@@ -289,6 +289,16 @@ function tagCloud(where, min, max) {
             <li>
                 <div class="item-inner">
                     <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton2/" class="title">Straight Skeleton and computing it with finite precision numbers (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-08</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
                         <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="title">Straight Skeleton and computing it with finite precision numbers (part 2)</a>
                     </p>
                     <p class="item-date">
@@ -323,16 +333,6 @@ function tagCloud(where, min, max) {
                     </p>
                     <p class="item-date">
                         <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
-                    </p>
-                </div>
-            </li>
-            <li>
-                <div class="item-inner">
-                    <p class="item-title">
-                        <a href="https://djewsbury.github.io/2017/01/vulkanworkshop2017/" class="title">Vulkan Workshop / DevU 2017</a>
-                    </p>
-                    <p class="item-date">
-                        <time datetime="2017-01-31 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-01-31</time>
                     </p>
                 </div>
             </li>
@@ -458,7 +458,7 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
-                    class="tag-list-count">2</span></li>
+                    class="tag-list-count">3</span></li>
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
@@ -484,6 +484,45 @@ function tagCloud(where, min, max) {
     
     
     
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2021/07/straightskeleton2/"
+    >Straight Skeleton and computing it with finite precision numbers (part 3)</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        Final pieces of the straight skeleton puzzle In the last couple of parts, I covered the definition of the straight skeleton, plus some details about how to calculate it with finite precision math. Here I&rsquo;ll go over some of the final elements of the implementation.
+Polygons with holes We can also calculate a straight skeleton for polygons with holes. In this case, we will start with multiple &ldquo;wavefronts&rdquo; &ndash; one that represents the outer edges of the polygon moving inwards, and others than represent the edges of the holes, moving outwards.
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2021/07/straightskeleton2/" class="">
+  <time datetime="2021-07-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-08</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/straightskeleton/"> StraightSkeleton </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1872 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 9 minutes </span>
+      </p>
+    </article>
     <article
       class="article article-type-page"
       itemscope
@@ -718,46 +757,6 @@ Integrating the diffuse BRDF On the previous page, we reconstructed a value from
 
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1692 words</span>
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 8 minutes </span>
-      </p>
-    </article>
-    <article
-      class="article article-type-page"
-      itemscope
-      itemtype="http://schema.org/BlogPosting"
-    >
-      <div class="article-header">
-        <h1 itemprop="name">
-  <a
-    class="article-title"
-    href="/2016/12/sphericalharmonics0/"
-    >Spherical Harmonics and applications in real time graphics</a
-  >
-</h1>
-
-      </div>
-      <div class="article-entry text-muted" itemprop="description">
-        Yikes; it&rsquo;s been awhile since my last update!
-I wanted to share a little bit of information from a technique I&rsquo;ve recently been working on for an unrelated project. The technique uses a series of equations called &ldquo;spherical harmonics&rdquo; for extremely efficient high quality diffuse environment illumination.
-This is a technique that started to become popular maybe around 15 years ago &ndash; possibly because of its usefulness on low power hardware.
-      </div>
-      <p class="article-meta">
-<span class="article-date">
-  <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/12/sphericalharmonics0/" class="">
-  <time datetime="2016-12-27 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-12-27</time>
-</a>
-</span>
-<span class="article-category">
-  <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/misc/"> Misc </a>
-</span>  
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/sphericalharmonics/"> SphericalHarmonics </a>
-  </span>
-
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2119 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
       </p>
     </article></div>
   
