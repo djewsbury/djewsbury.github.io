@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        Reviewing some denoising approaches (part 1) - XLE development blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="Lately a lot realtime graphics research has been focused around signal noise &amp;ndash; and more specifically, adding noise (by skipping samples) in specific ways so it can be removed again later passes. Though it isn&amp;rsquo;t really new, it seems to have become particularly important lately.
+There&amp;rsquo;s a couple of good examples in open source
+ AMD&amp;rsquo;s denoiser and screenspace reflections from GPUOpen: https://github.com/GPUOpen-Effects/FidelityFX-Denoiser Ray traced far-field AO from the DirectX samples: https://github." />
+    <meta name="generator" content="Hugo 0.84.2 with theme pure" />
+    <title>Reviewing some denoising approaches (part 1) - XLE development blog</title>
+    
+    
+    <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="Reviewing some denoising approaches (part 1)" />
+<meta property="og:description" content="Lately a lot realtime graphics research has been focused around signal noise &ndash; and more specifically, adding noise (by skipping samples) in specific ways so it can be removed again later passes. Though it isn&rsquo;t really new, it seems to have become particularly important lately.
+There&rsquo;s a couple of good examples in open source
+ AMD&rsquo;s denoiser and screenspace reflections from GPUOpen: https://github.com/GPUOpen-Effects/FidelityFX-Denoiser Ray traced far-field AO from the DirectX samples: https://github." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-20T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-07-20T00:00:00&#43;00:00" />
+
+<meta itemprop="name" content="Reviewing some denoising approaches (part 1)">
+<meta itemprop="description" content="Lately a lot realtime graphics research has been focused around signal noise &ndash; and more specifically, adding noise (by skipping samples) in specific ways so it can be removed again later passes. Though it isn&rsquo;t really new, it seems to have become particularly important lately.
+There&rsquo;s a couple of good examples in open source
+ AMD&rsquo;s denoiser and screenspace reflections from GPUOpen: https://github.com/GPUOpen-Effects/FidelityFX-Denoiser Ray traced far-field AO from the DirectX samples: https://github."><meta itemprop="datePublished" content="2021-07-20T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-07-20T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="2095">
+<meta itemprop="keywords" content="rendering,denoising," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Reviewing some denoising approaches (part 1)"/>
+<meta name="twitter:description" content="Lately a lot realtime graphics research has been focused around signal noise &ndash; and more specifically, adding noise (by skipping samples) in specific ways so it can be removed again later passes. Though it isn&rsquo;t really new, it seems to have become particularly important lately.
+There&rsquo;s a couple of good examples in open source
+ AMD&rsquo;s denoiser and screenspace reflections from GPUOpen: https://github.com/GPUOpen-Effects/FidelityFX-Denoiser Ray traced far-field AO from the DirectX samples: https://github."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/djewsbury" target="_blank">
+            <img src="https://djewsbury.github.io/media/xlelogo3.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">DJ</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Australia</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://djewsbury.github.io/tags/api/" class="tag-list-link" rel="2">api<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link" rel="5">arealights<span
+               class="tag-list-count">5</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link" rel="1">assetpath<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link" rel="2">blog<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link" rel="9">cross-platform<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link" rel="1">d3d<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/denoising/" class="tag-list-link" rel="1">denoising<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link" rel="1">gradle<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link" rel="2">hlsl<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link" rel="3">ibl<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link" rel="1">lighting<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link" rel="3">lights<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link" rel="1">materials<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link" rel="2">materialtool<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link" rel="1">metal<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link" rel="1">oitrans<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link" rel="1">pbr<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link" rel="2">rectanglelights<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link" rel="1">releases<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="3">rendering<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link" rel="1">samples<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link" rel="1">screenshots<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link" rel="1">shadercompile<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link" rel="4">shaders<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link" rel="4">specular<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link" rel="3">sphericalharmonics<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link" rel="3">spir-v<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link" rel="3">straightskeleton<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link" rel="4">tools<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link" rel="10">vulkan<span
+               class="tag-list-count">10</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" class="title">Reviewing some denoising approaches (part 1)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-20</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton2/" class="title">Straight Skeleton and computing it with finite precision numbers (part 3)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-08</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/straightskeleton1/" class="title">Straight Skeleton and computing it with finite precision numbers (part 2)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-01</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/straightskeleton0/" class="title">Straight Skeleton and computing it with finite precision numbers</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-29</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/06/quickupdate/" class="title">Quick update before a new post</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-06-28 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-06-28</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/api/" class="tag-list-link">api</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/arealights/" class="tag-list-link">arealights</a><span
+                    class="tag-list-count">5</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/assetpath/" class="tag-list-link">assetpath</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/blog/" class="tag-list-link">blog</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/cross-platform/" class="tag-list-link">cross-platform</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/denoising/" class="tag-list-link">denoising</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link">ggx</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/gradle/" class="tag-list-link">gradle</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/hlsl/" class="tag-list-link">hlsl</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/ibl/" class="tag-list-link">ibl</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lighting/" class="tag-list-link">lighting</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/lights/" class="tag-list-link">lights</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materials/" class="tag-list-link">materials</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/materialtool/" class="tag-list-link">materialtool</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/metal/" class="tag-list-link">metal</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/oitrans/" class="tag-list-link">oitrans</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/pbr/" class="tag-list-link">pbr</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rectanglelights/" class="tag-list-link">rectanglelights</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/releases/" class="tag-list-link">releases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/samples/" class="tag-list-link">samples</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/screenshots/" class="tag-list-link">screenshots</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shadercompile/" class="tag-list-link">shadercompile</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/shaders/" class="tag-list-link">shaders</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/specular/" class="tag-list-link">specular</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/sphericalharmonics/" class="tag-list-link">sphericalharmonics</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/spir-v/" class="tag-list-link">spir-v</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/straightskeleton/" class="tag-list-link">straightskeleton</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/tools/" class="tag-list-link">tools</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/vulkan/" class="tag-list-link">vulkan</a><span
+                    class="tag-list-count">10</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2021/07/reviewingsomedenoisingapproaches0/"
+    >Reviewing some denoising approaches (part 1)</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" class="article-date">
+  <time datetime="2021-07-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-20</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/misc/"> Misc </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/rendering/"> rendering </a>
+    <a class="article-tag-link" href="/tags/denoising/"> denoising </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 2095 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 10 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>Lately a lot realtime graphics research has been focused around signal noise &ndash; and more specifically, adding noise (by skipping samples) in specific ways so it can be removed again later passes. Though it isn&rsquo;t really new, it seems to have become particularly important lately.</p>
+<p>There&rsquo;s a couple of good examples in open source</p>
+<ul>
+<li>AMD&rsquo;s denoiser and screenspace reflections from GPUOpen: <a href="https://github.com/GPUOpen-Effects/FidelityFX-Denoiser">https://github.com/GPUOpen-Effects/FidelityFX-Denoiser</a></li>
+<li>Ray traced far-field AO from the DirectX samples: <a href="https://github.com/microsoft/DirectX-Graphics-Samples/tree/master/Samples/Desktop/D3D12Raytracing/src/D3D12RaytracingRealTimeDenoisedAmbientOcclusion">https://github.com/microsoft/DirectX-Graphics-Samples/tree/master/Samples/Desktop/D3D12Raytracing/src/D3D12RaytracingRealTimeDenoisedAmbientOcclusion</a></li>
+</ul>
+<p>I won&rsquo;t go into huge detail here, but just collect my thoughts and some observations I&rsquo;ve made while looking at them and also talk about the ambient occlusion approach described in &ldquo;Practical Realtime Strategies for Accurate Indirect Occlusion&rdquo; by Jimenez, Wu, Pesce &amp; Jarabo.</p>
+<h1 id="amds-screen-space-reflections">AMD&rsquo;s screen space reflections</h1>
+<p>AMD&rsquo;s SSR attempts to add a BRDF based filter to the reflections it finds in screenspace. Standard SSR assumes no microfacets on the reflecting surface &ndash; as if everything was a perfect mirror reflection. This is usually countered by doing the SSR in downsampled resolution and then blurring everything in XY afterwards. The result looks surprisingly acceptible, but from a PBR point of view, it&rsquo;s as if we&rsquo;ve given everything a constant roughness value and some wierd screen aligned BRDF.</p>
+<p>AMD combines this with the &ldquo;importance sampling&rdquo; technique that was sometimes used with cubemaps before we started to prefer &ldquo;split-sum&rdquo; style approaches. The idea here is to use a distribution of normals on the reflecting surface, and sample a separate reflection for each one. We can distribute the normals according to microfacet equations such as GTR, etc, which can take in a roughness value and give us an accurate emulation of a real BRDF (more on this below).</p>
+<p>However, to get a smooth result reliably, we will need hundreds if not thousands of samples, even if those samples are distributed intelligently. So our goal is to try to find a way to reduce the number of samples required from hundreds per pixel down to somewhere between one quarter to one.</p>
+<p>We do this by assuming that samples for pixels near each other will be similar; and distribute the set of normals we want to test across nearby pixels in XY. Furthermore, we assume that samples from previous frames are likely to be similar to samples from the current frame and also distribute normals across frames. Later we do filtering in space and time to effectively find the combined result of all of these samples.</p>
+<p>Reducing the number of samples per pixel is the function that adds noise to the system and then we do a few screen space filters to attempt to remove this noise again. If those two functions are balanced well against each other, the result can be pretty surprising.</p>
+<h2 id="generating-samples">Generating samples</h2>
+<p>AMD uses blue noise described in <a href="https://eheitzresearch.wordpress.com/762-2/">https://eheitzresearch.wordpress.com/762-2/</a> (Eric Heitz et al) to generate the distribution of normals for the reflection. It looks like this could be further improved by applying importance sampling techniques (<a href="https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling">https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling</a>) to weight for the BRDF. This uses some small lookup tables (though it looks like AMD&rsquo;s only using a fraction of the total lookup buffer, if you use this, I recommend looking for optimizations there). These parts of the solution are part of the &ldquo;sample&rdquo; rather than the library itself and so AMD may be expecting that most users already have these kinds of things worked out.</p>
+<p>For some of the techniques we use later, we want the normals to be distributed in time in roughly the same way that they are distributed in space, and indeed it looks like they will be with this approach. AMD adjusts the number of samples per pixel from 1/4 to 1 based on results from previous frames. Interestingly it does this based on temporal but not spatial variance. I&rsquo;m not sure if there&rsquo;s a particular advantage to this, because it looks like the shaders should have access to both variance values.</p>
+<h2 id="filtering">Filtering</h2>
+<p>AMD then runs a spatial filter before a temporal filter; each in separate shaders. The spatial filter works in 8x8 tiles, and loads a 16x16 area of the framebuffer into groupshared memory for each tile. For each pixel, 16 nearby pixels are sampled &ndash; this time using a different time of blue noise, based on a small Halton sequence. That sequence is chequerboarded, but otherwise unchanging. So, even though we have a 16x16 region of pixels available, each individual pixel is only actually influenced by 16 spatially neighbouring pixels. The Halton sequence here is also worth watching, because that pattern can become visible in the final result, unless it is obscurred by other noise. Particularly when we&rsquo;re using a higher quality blue noise earlier in the pipeline, this pass can counteract that. I&rsquo;ve seen this create some banding patterns, but wouldn&rsquo;t be surprised to see it create some patterns repeating in screenspace. On the other hand, it also helps reduce outliers (relative to sampling every pixel in an 8x8 block).</p>
+<p>Pixel contributions are weighted the compatibility of their depth and normal (but not roughness). The way the depth weighting works here may cause great noise on surface inclined to the camera; which may not be great for reflections specifically due to fresnel. The weighing is also pretty expensive, with one transcendental function for each depth and normal per sample. It makes me wonder if a cheaper &ldquo;empirically good enough&rdquo; weighting but with more influencing pixels might be better in some cases.</p>
+<p>Temporal filtering happens afterwards, and works on the samples after spatial filtering (ie, the inputs to the temporal filter are already somewhat de-noised). Temporal filtering only works with 2 input samples: the new &ldquo;today&rdquo; sample and the accumulation of previous filtering (&ldquo;yesterday&rdquo; sample). We weight the compatibility of the yesterday sample by depth, normal and this time roughness as well.</p>
+<p>We also clamp the &ldquo;yesterday&rdquo; value to &ldquo;today&rsquo;s&rdquo; local spatial neighbourhood (this time sampling a 3x3 block of nearby values). This virtually eliminates ghosting; but I&rsquo;ve seen it contributing to a strobing effect. The strobing effect can be quite apparent and distracting; I&rsquo;m not sure if it&rsquo;s caused by a lack of samples in the spatial filtering, too few samples in our neighbourhood, or just tolerances being too tight.</p>
+<p>AMD then also runs a final blur shader on the final result. This may be because the sample combines &ldquo;mirror&rdquo; reflections with &ldquo;glossy&rdquo; reflections. The mirror reflections the more traditional SSR approach, which may need a blur as a final fixup. But for the glossy reflections, this blur isn&rsquo;t ideal. We actually want the blurriness to come as a result of the normal distribution to correctly reproduce the BRDF. Furthermore the blur is very similar to the spatial denoise filter. We have a smaller 5x5 kernel, but this time weight based on roughness and XY distance.</p>
+<p>This final blur may be a little more memory bound than the other filters, but still seems fairly expensive. It makes we wonder if it might be better to remove the blur and increase the number of samples in favour of more samples for the spatial noise, and perhaps use a different approach for mirror reflections.</p>
+<h2 id="tile-classification">Tile classification</h2>
+<p>SSR approaches are often combined with some kind of &ldquo;classification&rdquo; pass, which will filter out pixels that don&rsquo;t need reflection information. Here, AMD just generates a list of XY values in a big table for pixels to run reflection samples on. This approach seem pretty powerful, and there may be room for further improvements here &ndash; for example, by including more for greater variation in the number of samples per pixel (eg, from variance or roughness) or separating mirror and glossy reflections to different lists.</p>
+<p>There&rsquo;s also might be some way to combine writing this classification list with a pixel shader for the actual geometry. That might allow for turning on flags such as anisotrophy. That might run into complications with generating the &ldquo;indirect args&rdquo; buffer they system needs, though.</p>
+<h2 id="ggx-screenspace-reflections">GGX screenspace reflections</h2>
+<p>Here&rsquo;s a screen shot from this technique with a few of the tweaks suggested here. This is a medium-roughness metallic material, the screenspace reflections are in red &amp; green (ie it&rsquo;s not reflecting the proper color, just a red/green gradient), and there&rsquo;s also a skybox reflecting. This uses the GGX equations and all blurring is coming just from the distribution of normals and from the BRDF itself (there&rsquo;s no final screenspace blur). Though I&rsquo;m not using the code from the AMD sample for this, I&rsquo;ve replaced their approach with something I believe might be a little more optimal.</p>
+<figure><img src="/media/Denoise/ssr-ggx-0.png"/>
+</figure>
+
+<p>The skybox reflections are coming from a full resolution skybox; there&rsquo;s no split-sum prefiltering or anything like that. It&rsquo;s just the sampling a highres skybox the same way it samples reflections in screenspace.</p>
+<p>This is from a still camera, but it also looks pretty nice in motion (apart from the speckles I&rsquo;ll mention in a bit). I&rsquo;m using g_temporal_variance_guided_tracing_enabled=1 &amp; g_samples_per_quad=1, which should give between 1/4 and 1 samples per pixel based on the amount of variance.</p>
+<p>Here&rsquo;s another couple of shots showing exactly how much blurring you can achieve through this approach:</p>
+<p><figure><img src="/media/Denoise/ssr-ggx-1.png"
+         alt="low roughness material"/><figcaption>
+            <p>low roughness material</p>
+        </figcaption>
+</figure>
+
+<figure><img src="/media/Denoise/ssr-ggx-2.png"
+         alt="medium roughness material"/><figcaption>
+            <p>medium roughness material</p>
+        </figcaption>
+</figure>
+</p>
+<p>This example really shows exactly how filtered the reflections can really get. If this was just a straightforward blur kernel, we&rsquo;d need hundreds of samples. Indeed, for the IBL prefiltering I use thousands upon thousands of samples &ndash; and that&rsquo;s essentially the same thing! But somehow we can get away with a spatially and temporal stable image with less than a sample per pixel. It&rsquo;s seems kind of magic to me; arrising somehow out of the crazy statistics of spatial and temporal coherency.</p>
+<p>You may notice some slight continuities in the reflection. That&rsquo;s not the filtering, that&rsquo;s actually the resolution of vertex positions and normals causing a flat surface to be very slightly bent. Our sampling is actually precise enough to highlight it (whereas it might be hidden in simplier lighting models). Here&rsquo;s a clearer shot showing the edges between triangles causing aslight continuity of the slope of the surface:
+<figure><img src="/media/Denoise/ssr-ggx-3.png"/>
+</figure>
+</p>
+<p>This approach should be able to handle some aspects of the BRDF that are lost from split-sum and some other table-based approaches (for example, stretching the reflection anisotrophically). We can also happily use any BRDF for it, there&rsquo;s no special requirements. So it can be easily adapted to match lighting from another approach, for example. It can also be combined with dynamically rendered cubemaps; since there&rsquo;s no prefiltering. Alternatively, you could do this in a reverse way and filter dynamically generated cubemaps over multiple frames.</p>
+<p>However, it&rsquo;s kind of expensive right now. I haven&rsquo;t optimized my changes and the original AMD code is also a little expensive. I feel like it would be possible for ps5-gen consoles; but it would be expensive enough to require giving something else up (if that makes any sense). It&rsquo;s also possible that a lot of this can be repurposed with ray tracing in mind (but I&rsquo;ll touch on that when talking about the DirectX sample AO approach later)</p>
+<p>There&rsquo;s also a couple of artifacts you may have noticed:</p>
+<ul>
+<li>in these screenshots, I&rsquo;m using an importance-sampling type approach that will distribution of normals to prioritize high variance parts of the GGX equation. However it&rsquo;s not accounting for variance in the incident light we&rsquo;re reflecting. In this case, there are small bright part of the skybox which can be a hundred times brighter than the surrounding pixels. This means they can sometimes be picked up by the sampling when you really don&rsquo;t want them to be and they will overpower other samples. This approach, even with all of it&rsquo;s statically majesty, can&rsquo;t really deal with these kinds of outlier samples. Maybe there&rsquo;s some more clamping or something else that can be done, I haven&rsquo;t looked too deeply into it. You can see the problem in the bright speckles in the screenshots. These speckles aren&rsquo;t temporally stable and really need some kind of fix</li>
+<li>at low roughness values, the colors look like they are getting quantized. This might be a result of passing radiance values through 10-bit and 16-bit precision conversions, or some other side effect of all of this filtering</li>
+</ul>
+<h1 id="next-time">Next time</h1>
+<p>Playing around with this has given me a sense of just how powerful this idea of adding noise and filtering it our later can be. When you see just how blurry the reflections can be, it&rsquo;s kind of crazy that this is coming from so few samples.</p>
+<p>There&rsquo;s more I can cover, but this has already gotten pretty long; so I&rsquo;ll stop for now and try to come back with some thoughts on the other approaches I mentioned later.</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" title="Reviewing some denoising approaches (part 1)" target="_blank" rel="external">https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/djewsbury" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://djewsbury.github.io/media/xlelogo3.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/djewsbury" target="_blank"><span class="text-dark">DJ</span><small class="ml-1x"></small></a></h3>
+        <div></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://djewsbury.github.io/2021/07/straightskeleton2/" title="Straight Skeleton and computing it with finite precision numbers (part 3)"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/djewsbury" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://djewsbury.github.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2015  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://djewsbury.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://djewsbury.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/djewsbury.github.io\/',
+            CONTENT_URL: 'https:\/\/djewsbury.github.io\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://djewsbury.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-71034032-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

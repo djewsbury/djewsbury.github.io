@@ -157,6 +157,10 @@
                class="tag-list-count">1</span></a>
             
             
+            <a href="https://djewsbury.github.io/tags/denoising/" class="tag-list-link" rel="1">denoising<span
+               class="tag-list-count">1</span></a>
+            
+            
             <a href="https://djewsbury.github.io/tags/ggx/" class="tag-list-link" rel="4">ggx<span
                class="tag-list-count">4</span></a>
             
@@ -209,8 +213,8 @@
                class="tag-list-count">1</span></a>
             
             
-            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="2">rendering<span
-               class="tag-list-count">2</span></a>
+            <a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link" rel="3">rendering<span
+               class="tag-list-count">3</span></a>
             
             
             <a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link" rel="1">roughness<span
@@ -289,6 +293,16 @@ function tagCloud(where, min, max) {
             <li>
                 <div class="item-inner">
                     <p class="item-title">
+                        <a href="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" class="title">Reviewing some denoising approaches (part 1)</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-07-20 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-07-20</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
                         <a href="https://djewsbury.github.io/2021/07/straightskeleton2/" class="title">Straight Skeleton and computing it with finite precision numbers (part 3)</a>
                     </p>
                     <p class="item-date">
@@ -326,16 +340,6 @@ function tagCloud(where, min, max) {
                     </p>
                 </div>
             </li>
-            <li>
-                <div class="item-inner">
-                    <p class="item-title">
-                        <a href="https://djewsbury.github.io/2017/02/sphericalharmonics2/" class="title">Spherical Harmonics and applications in real time graphics (part 3)</a>
-                    </p>
-                    <p class="item-date">
-                        <time datetime="2017-02-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2017-02-12</time>
-                    </p>
-                </div>
-            </li>
         </ul>
     </div>
 </div>
@@ -366,6 +370,10 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/d3d/" class="tag-list-link">d3d</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/denoising/" class="tag-list-link">denoising</a><span
                     class="tag-list-count">1</span></li>
             
             
@@ -422,7 +430,7 @@ function tagCloud(where, min, max) {
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/rendering/" class="tag-list-link">rendering</a><span
-                    class="tag-list-count">2</span></li>
+                    class="tag-list-count">3</span></li>
             
             
             <li class="tag-list-item"><a href="https://djewsbury.github.io/tags/roughness/" class="tag-list-link">roughness</a><span
@@ -484,6 +492,47 @@ function tagCloud(where, min, max) {
     
     
     
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2016/01/transmissionnodegraph/"
+    >Transmission Node Diagram</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &ldquo;Microfacet Models for Refraction through Rough Surfaces.&quot; Also known as the &ldquo;GGX&rdquo; model (or Trowbridge-Reitz).
+ You can see how the node graph comes in handy for debugging a shader function like this. It&rsquo;s useful to visualize each term and see it&rsquo;s effects. For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram.
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://djewsbury.github.io/2016/01/transmissionnodegraph/" class="">
+  <time datetime="2016-01-22 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-01-22</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/xle/"> XLE </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/materialtool/"> MaterialTool </a>
+    <a class="article-tag-link" href="/tags/tools/"> Tools </a>
+    <a class="article-tag-link" href="/tags/shaders/"> Shaders </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 138 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 1 minutes </span>
+      </p>
+    </article>
     <article
       class="article article-type-page"
       itemscope
@@ -722,52 +771,6 @@ I&rsquo;m finding that it makes a huge difference. So much so that not only do w
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 920 words</span>
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 5 minutes </span>
       </p>
-    </article>
-    <article
-      class="article article-type-page"
-      itemscope
-      itemtype="http://schema.org/BlogPosting"
-    >
-      <div class="article-header">
-        <h1 itemprop="name">
-  <a
-    class="article-title"
-    href="/2015/12/first/"
-    >First post</a
-  >
-</h1>
-
-      </div>
-      <div class="article-entry text-muted" itemprop="description">
-        This blog will contain some day-to-day information about XLE.
-Let&rsquo;s start with some screenshots, rendered with XLE:
- The Captain character from Archeage (US site).
- One of the (many) costumes from Archeage.
- A skeleton enemy from Archeage.
- A military spacecraft.
- The &ldquo;Gweonid&rdquo; character from Archeage.
- A metal golem character from Archeage.
- One of the costumes from Archeage, and &ldquo;Nyra&rdquo; character. Nyra model comes from Paul Tosca.
-      </div>
-      <p class="article-meta">
-<span class="article-date">
-  <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2015/12/first/" class="">
-  <time datetime="2015-12-01 00:00:00 &#43;0000 UTC" itemprop="datePublished">2015-12-01</time>
-</a>
-</span>
-<span class="article-category">
-  <i class="icon icon-folder"></i>&nbsp;
-  <a class="article-category-link" href="/categories/blog/"> blog </a>
-</span>  
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/blog/"> blog </a>
-  </span>
-
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 89 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 1 minutes </span>
-      </p>
     </article></div>
   
 <nav class="bar bar-footer clearfix" data-stick-bottom>
@@ -777,10 +780,15 @@ Let&rsquo;s start with some screenshots, rendered with XLE:
           <i class="icon icon-angle-left"></i>
           
         </a>
+      </li><li class="next">
+        <a href="/page/6/">
+          <i class="icon icon-angle-right"></i>
+          
+        </a>
       </li>
     </ul>
     <div class="total-article bar-right">
-      Page:5/5
+      Page:5/6
     </div>
   </div>
 </nav>
