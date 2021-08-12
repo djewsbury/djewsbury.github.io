@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>
-        Transmission Node Diagram - XLE development blog
+        Transform Feedback / Stream Output with the HLSL to Spir-V compiler - XLE development blog
       </title>
         <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -20,33 +20,33 @@
     <meta http-equiv="window-target" content="_top" />
     
     
-    <meta name="description" content="Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &amp;ldquo;Microfacet Models for Refraction through Rough Surfaces.&amp;quot; Also known as the &amp;ldquo;GGX&amp;rdquo; model (or Trowbridge-Reitz).
- You can see how the node graph comes in handy for debugging a shader function like this. It&amp;rsquo;s useful to visualize each term and see it&amp;rsquo;s effects. For example, the &amp;ldquo;D&amp;rdquo; term of the BTDF is a node on the diagram." />
+    <meta name="description" content="I&amp;rsquo;ll follow up with more on denoising approaches shortly; but here&amp;rsquo;s a quick interesting tip that may help someone in the future come a lucky google search. It&amp;rsquo;s about a black-sheep rendering API feature called transform feedback&amp;quot; in OpenGL lingo, or &amp;ldquo;stream output&amp;rdquo; in DirectX lingo. This feature causes the geometry shader to write primitive data to an arbitrary memory buffer instead of passing it onto the rasterizer.
+Vulkan requires 2 things to use transform feedback / stream output:" />
     <meta name="generator" content="Hugo 0.84.2 with theme pure" />
-    <title>Transmission Node Diagram - XLE development blog</title>
+    <title>Transform Feedback / Stream Output with the HLSL to Spir-V compiler - XLE development blog</title>
     
     
     <link rel="stylesheet" href="https://djewsbury.github.io/css/style.min.5d03f5a1eff9504c7a36709faaa472be3c8b01bff19abe32c7ebf57a36c2d22f.css">
     
     <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
-    <meta property="og:title" content="Transmission Node Diagram" />
-<meta property="og:description" content="Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &ldquo;Microfacet Models for Refraction through Rough Surfaces.&quot; Also known as the &ldquo;GGX&rdquo; model (or Trowbridge-Reitz).
- You can see how the node graph comes in handy for debugging a shader function like this. It&rsquo;s useful to visualize each term and see it&rsquo;s effects. For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram." />
+    <meta property="og:title" content="Transform Feedback / Stream Output with the HLSL to Spir-V compiler" />
+<meta property="og:description" content="I&rsquo;ll follow up with more on denoising approaches shortly; but here&rsquo;s a quick interesting tip that may help someone in the future come a lucky google search. It&rsquo;s about a black-sheep rendering API feature called transform feedback&quot; in OpenGL lingo, or &ldquo;stream output&rdquo; in DirectX lingo. This feature causes the geometry shader to write primitive data to an arbitrary memory buffer instead of passing it onto the rasterizer.
+Vulkan requires 2 things to use transform feedback / stream output:" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://djewsbury.github.io/2016/01/transmissionnodegraph/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2016-01-22T00:00:00&#43;00:00" />
-<meta property="article:modified_time" content="2016-01-22T00:00:00&#43;00:00" />
+<meta property="og:url" content="https://djewsbury.github.io/2021/08/vulkanstreamoutput/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-12T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-08-12T00:00:00&#43;00:00" />
 
-<meta itemprop="name" content="Transmission Node Diagram">
-<meta itemprop="description" content="Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &ldquo;Microfacet Models for Refraction through Rough Surfaces.&quot; Also known as the &ldquo;GGX&rdquo; model (or Trowbridge-Reitz).
- You can see how the node graph comes in handy for debugging a shader function like this. It&rsquo;s useful to visualize each term and see it&rsquo;s effects. For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram."><meta itemprop="datePublished" content="2016-01-22T00:00:00&#43;00:00" />
-<meta itemprop="dateModified" content="2016-01-22T00:00:00&#43;00:00" />
-<meta itemprop="wordCount" content="138">
-<meta itemprop="keywords" content="MaterialTool,Tools,Shaders," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Transmission Node Diagram"/>
-<meta name="twitter:description" content="Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from &ldquo;Microfacet Models for Refraction through Rough Surfaces.&quot; Also known as the &ldquo;GGX&rdquo; model (or Trowbridge-Reitz).
- You can see how the node graph comes in handy for debugging a shader function like this. It&rsquo;s useful to visualize each term and see it&rsquo;s effects. For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram."/>
+<meta itemprop="name" content="Transform Feedback / Stream Output with the HLSL to Spir-V compiler">
+<meta itemprop="description" content="I&rsquo;ll follow up with more on denoising approaches shortly; but here&rsquo;s a quick interesting tip that may help someone in the future come a lucky google search. It&rsquo;s about a black-sheep rendering API feature called transform feedback&quot; in OpenGL lingo, or &ldquo;stream output&rdquo; in DirectX lingo. This feature causes the geometry shader to write primitive data to an arbitrary memory buffer instead of passing it onto the rasterizer.
+Vulkan requires 2 things to use transform feedback / stream output:"><meta itemprop="datePublished" content="2021-08-12T00:00:00&#43;00:00" />
+<meta itemprop="dateModified" content="2021-08-12T00:00:00&#43;00:00" />
+<meta itemprop="wordCount" content="1556">
+<meta itemprop="keywords" content="rendering,Vulkan," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Transform Feedback / Stream Output with the HLSL to Spir-V compiler"/>
+<meta name="twitter:description" content="I&rsquo;ll follow up with more on denoising approaches shortly; but here&rsquo;s a quick interesting tip that may help someone in the future come a lucky google search. It&rsquo;s about a black-sheep rendering API feature called transform feedback&quot; in OpenGL lingo, or &ldquo;stream output&rdquo; in DirectX lingo. This feature causes the geometry shader to write primitive data to an arbitrary memory buffer instead of passing it onto the rasterizer.
+Vulkan requires 2 things to use transform feedback / stream output:"/>
 
     <!--[if lte IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -510,8 +510,8 @@ function tagCloud(where, min, max) {
       <h1 itemprop="name">
   <a
     class="article-title"
-    href="/2016/01/transmissionnodegraph/"
-    >Transmission Node Diagram</a
+    href="/2021/08/vulkanstreamoutput/"
+    >Transform Feedback / Stream Output with the HLSL to Spir-V compiler</a
   >
 </h1>
 
@@ -519,8 +519,8 @@ function tagCloud(where, min, max) {
         
 <span class="article-date">
   <i class="icon icon-calendar-check"></i>&nbsp;
-<a href="https://djewsbury.github.io/2016/01/transmissionnodegraph/" class="article-date">
-  <time datetime="2016-01-22 00:00:00 &#43;0000 UTC" itemprop="datePublished">2016-01-22</time>
+<a href="https://djewsbury.github.io/2021/08/vulkanstreamoutput/" class="article-date">
+  <time datetime="2021-08-12 00:00:00 &#43;0000 UTC" itemprop="datePublished">2021-08-12</time>
 </a>
 </span>
 <span class="article-category">
@@ -529,26 +529,158 @@ function tagCloud(where, min, max) {
 </span>  
   <span class="article-tag">
     <i class="icon icon-tags"></i>&nbsp;
-    <a class="article-tag-link" href="/tags/materialtool/"> MaterialTool </a>
-    <a class="article-tag-link" href="/tags/tools/"> Tools </a>
-    <a class="article-tag-link" href="/tags/shaders/"> Shaders </a>
+    <a class="article-tag-link" href="/tags/rendering/"> rendering </a>
+    <a class="article-tag-link" href="/tags/vulkan/"> Vulkan </a>
   </span>
 
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 138 words</span>
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 1 minutes </span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1556 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 8 minutes </span>
       </div>
     </div>
     <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
-      <p>Here is a node diagram for the specular transmission function (BTDF) from Walter, et al, from <em>&ldquo;Microfacet Models for Refraction through Rough Surfaces.&quot;</em>
-Also known as the &ldquo;GGX&rdquo; model (or Trowbridge-Reitz).</p>
-<figure><img src="/media/MaterialTool/WalterGGXTransmission.png"/>
-</figure>
+      <p>I&rsquo;ll follow up with more on denoising approaches shortly; but here&rsquo;s a quick interesting tip that may help someone in the future come a lucky google search. It&rsquo;s about a black-sheep rendering API feature called transform feedback&quot; in OpenGL lingo, or &ldquo;stream output&rdquo; in DirectX lingo. This feature causes the geometry shader to write primitive data to an arbitrary memory buffer instead of passing it onto the rasterizer.</p>
+<p>Vulkan requires 2 things to use transform feedback / stream output:</p>
+<ol>
+<li>use of the &ldquo;<strong>VK_EXT_transform_feedback</strong>&rdquo; extension on the CPU side (<a href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VK_EXT_transform_feedback.html">https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VK_EXT_transform_feedback.html</a>)</li>
+<li>some extra instructions in the SPIR-V shader for stride and offsets of the attributes of the written primitives</li>
+</ol>
+<p>If you&rsquo;re using the spirv-tools GLSL shader, this can write out the necessary SPIR-V instructions. However, if you&rsquo;re using the <strong>HLSL to SPIR-V compiler</strong> (<a href="https://github.com/microsoft/DirectXShaderCompiler/blob/master/docs/SPIR-V.rst),">https://github.com/microsoft/DirectXShaderCompiler/blob/master/docs/SPIR-V.rst),</a> then this cannot. The HLSL compiler will never write out shader code that can be directly used with <strong>VK_EXT_transform_feedback</strong>. It&rsquo;s almost like the GLSL compiler is stream-output-aware, while the HLSL is just not stream-output-aware.</p>
+<p>This wasn&rsquo;t immediately obvious to me at first. There no documentation about how or if this should work &ndash; and if you try it, the shader seems to run ok (and the stream output counter variables actually increase) &ndash; but nothing will ever be written to your output buffer, no matter what you do.</p>
+<p>However, there is still a way to use a HLSL geometry shaders, with transform feedback on Vulkan, and it&rsquo;s not too bad.</p>
+<h1 id="spir-v-lines-for-transform-feedback">SPIR-V lines for transform feedback</h1>
+<p>Unlike Microsoft&rsquo;s bytecode, SPIR-V is openly defined, which means we can actually patch up the byte code ourselves. The format is very simple; the building block is just a 4 byte &ldquo;op&rdquo; code with an explicit parameter count (all relevant constants are in <em>spirv.hpp</em>). Plus it turns out that somebody nice will actually validate bad spirv before it causes a GPU crash (this might be a Vulkan layer or the nvidia driver, I&rsquo;m not sure). This isn&rsquo;t the PS3, it seems like this kind of shader patching should very quite practical and effective using SPIR-V.</p>
+<p>Consider the following (trivial) HLSL shader code.</p>
+<pre><code class="language-hlsl">    [maxvertexcount(1)]
+        void main(triangle VSOUT input[3], inout PointStream&lt;GSOutput&gt; outputStream)
+    {
+        GSOutput result;
+        result.gsOut.x = max(max(input[0].vsOut.x, input[1].vsOut.x), input[2].vsOut.x);
+        result.gsOut.y = max(max(input[0].vsOut.y, input[1].vsOut.y), input[2].vsOut.y);
+        result.gsOut.z = max(max(input[0].vsOut.z, input[1].vsOut.z), input[2].vsOut.z);
+        result.gsOut.w = max(max(input[0].vsOut.w, input[1].vsOut.w), input[2].vsOut.w);
+        outputStream.Append(result);
+    }
+</code></pre>
+<p>By comparing the GLSL compiler output to the HLSL compiler output, I tracked down the minimum set of things we need to add to the SPIR-V to have it work. Just below you&rsquo;ll see the compiled version of the above shader, expressed in spirv-tools disassembly format. 
+You&rsquo;ll notice it&rsquo;s divided into 3 parts:</p>
+<ol>
+<li>some initial declarations (<em>OpExecutionMode</em>, <em>OpName</em>, <em>OpDecorate</em>, etc)</li>
+<li>types, variables and constants (<em>OpTypeFloat</em>, <em>OpVariable</em>, etc)</li>
+<li>a function implementation (actual instructions like <em>OpLoad</em>/<em>OpStore</em>, etc)</li>
+</ol>
+<p>Focus on part (1), everything we need right now is in that part.</p>
+<pre><code class="language-spirv">               OpCapability Geometry
+          %1 = OpExtInstImport &quot;GLSL.std.450&quot;
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Geometry %main &quot;main&quot; %gl_Position %out_var_POINT0
+               OpExecutionMode %main OutputVertices 1
+               OpExecutionMode %main Invocations 1
+               OpExecutionMode %main Triangles
+               OpExecutionMode %main OutputPoints
+               OpSource HLSL 500
+               OpName %out_var_POINT0 &quot;out.var.POINT0&quot;
+               OpName %main &quot;main&quot;
+               OpDecorate %gl_Position BuiltIn Position
+               OpDecorate %out_var_POINT0 Location 0
 
-<p>You can see how the node graph comes in handy for debugging a shader function like this. It&rsquo;s useful to visualize each term and see it&rsquo;s effects.
-For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram. And we can visualize the effects of that term independent of everything else.</p>
-<p>In this case, the diagram saves a HLSL function, and that function is called by text-based HLSL code. This will become part of some new functionality for specular transmission through thin surfaces.</p>
-<p>I&rsquo;ll pop this in a new &ldquo;experimental&rdquo; branch.</p>
-<p>See the post from yesterday, <a href="materialtool">Material and Node Diagram Tool</a>, for more information.</p>
+       %uint = OpTypeInt 32 0
+     %uint_3 = OpConstant %uint 3
+      %float = OpTypeFloat 32
+    %v4float = OpTypeVector %float 4
+%_arr_v4float_uint_3 = OpTypeArray %v4float %uint_3
+%_ptr_Input__arr_v4float_uint_3 = OpTypePointer Input %_arr_v4float_uint_3
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+       %void = OpTypeVoid
+         %13 = OpTypeFunction %void
+%gl_Position = OpVariable %_ptr_Input__arr_v4float_uint_3 Input
+%out_var_POINT0 = OpVariable %_ptr_Output_v4float Output
+         %14 = OpUndef %v4float
+
+       %main = OpFunction %void None %13
+         %15 = OpLabel
+         %16 = OpLoad %_arr_v4float_uint_3 %gl_Position
+         %17 = OpCompositeExtract %v4float %16 0
+         %18 = OpCompositeExtract %v4float %16 1
+         %19 = OpCompositeExtract %v4float %16 2
+         %20 = OpCompositeExtract %float %17 0
+         %21 = OpCompositeExtract %float %18 0
+         %22 = OpExtInst %float %1 FMax %20 %21
+         %23 = OpCompositeExtract %float %19 0
+         %24 = OpExtInst %float %1 FMax %22 %23
+         %25 = OpCompositeInsert %v4float %24 %14 0
+         %26 = OpCompositeExtract %float %17 1
+         %27 = OpCompositeExtract %float %18 1
+         %28 = OpExtInst %float %1 FMax %26 %27
+         %29 = OpCompositeExtract %float %19 1
+         %30 = OpExtInst %float %1 FMax %28 %29
+         %31 = OpCompositeInsert %v4float %30 %25 1
+         %32 = OpCompositeExtract %float %17 2
+         %33 = OpCompositeExtract %float %18 2
+         %34 = OpExtInst %float %1 FMax %32 %33
+         %35 = OpCompositeExtract %float %19 2
+         %36 = OpExtInst %float %1 FMax %34 %35
+         %37 = OpCompositeInsert %v4float %36 %31 2
+         %38 = OpCompositeExtract %float %17 3
+         %39 = OpCompositeExtract %float %18 3
+         %40 = OpExtInst %float %1 FMax %38 %39
+         %41 = OpCompositeExtract %float %19 3
+         %42 = OpExtInst %float %1 FMax %40 %41
+         %43 = OpCompositeInsert %v4float %42 %37 3
+               OpStore %out_var_POINT0 %43
+               OpEmitVertex
+               OpReturn
+               OpFunctionEnd
+</code></pre>
+<p>Now, here is section 1 of the above shader again, but this time with the declarations for transform feedback added:</p>
+<pre><code class="language-spirv">               OpCapability Geometry
+               OpCapability TransformFeedback
+          %1 = OpExtInstImport &quot;GLSL.std.450&quot;
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint Geometry %main &quot;main&quot; %gl_Position %out_var_POINT0
+               OpExecutionMode %main Xfb
+               OpExecutionMode %main OutputVertices 1
+               OpExecutionMode %main Invocations 1
+               OpExecutionMode %main Triangles
+               OpExecutionMode %main OutputPoints
+               OpSource HLSL 500
+               OpName %out_var_POINT0 &quot;out.var.POINT0&quot;
+               OpName %main &quot;main&quot;
+               OpDecorate %gl_Position BuiltIn Position
+               OpDecorate %out_var_POINT0 Location 0
+               OpDecorate %out_var_POINT0 XfbBuffer 0
+               OpDecorate %out_var_POINT0 XfbStride 16
+               OpDecorate %out_var_POINT0 Offset 0
+</code></pre>
+<p>Breaking down the specific additions, we get:</p>
+<pre><code class="language-spirv">               OpCapability TransformFeedback
+</code></pre>
+<p>This must appear with the other OpCapability&rsquo;s, which will be at the top.</p>
+<pre><code class="language-spirv">               OpExecutionMode %main Xfb
+</code></pre>
+<p>This should appear after the &ldquo;OpEntryPoint&rdquo; part.</p>
+<pre><code class="language-spirv">               OpDecorate %out_var_POINT0 XfbBuffer 0
+               OpDecorate %out_var_POINT0 XfbStride 16
+               OpDecorate %out_var_POINT0 Offset 0
+</code></pre>
+<p>This should appear with the other &ldquo;OpDecorate&rdquo; parts, before type and constant declarations. Note that here we&rsquo;re specifying the parameters for the attributes, which is the extra bit of markup we need.
+I&rsquo;m not 100% sure that the &ldquo;OpName&rdquo; part for a variable will appear before the OpDecorates, but you should use that OpName to identify the correct output variables to markup.</p>
+<p>Remember that the constants for all of this stuff is in spirv.hpp (this disassembly is just a text version of the shader byte code, so it&rsquo;s the byte code itself that needs to be patched).
+The op codes must appear in a specific order, in SPIR-V you can&rsquo;t put things in arbitrary orders (which is unfortunate because otherwise we&rsquo;d just append everything).</p>
+<p>And that&rsquo;s about it. If you want to use the geometry streams feature, there&rsquo;s a capability for that as well, and a decoration to specify the stream and you should change OpEmitVertex to OpEmitStreamVertex (with parameters).</p>
+<h1 id="patching-bytecode-post-compile">Patching bytecode post-compile</h1>
+<p>This patching needs to happen after shader compilation, obviously, so it looks something like this:</p>
+<ol>
+<li><strong>&lt;HLSL input&gt;</strong> -&gt; compiler -&gt; <strong>&lt;spirv&gt;</strong></li>
+<li><strong>&lt;spirv&gt;</strong> + <strong>&lt;offset and stride values&gt;</strong> -&gt; patching -&gt; <strong>&lt;patched-spirv&gt;</strong></li>
+<li><strong>&lt;patched-spirv&gt;</strong> + <strong>&lt;other states&gt;</strong> -&gt; create graphics pipeline</li>
+</ol>
+<p>The good thing about is we don&rsquo;t need to know the offset and stride values at shader compile time. This is more in line with what happens in DirectX, where those values are passed to the construct geometry shader method, alongside the compiled byte code. Whereas, with GLSL, those values are hard coded into GLSL shader (and therefore need to be known earlier). This turns out to be convenient for reusing existing HLSL geometry shaders.</p>
+<h1 id="why-isnt-there-a-clearer-way-to-do-this">Why isn&rsquo;t there a clearer way to do this?</h1>
+<p>As far as I can see, there&rsquo;s no explicit documentation for how this was intended to work. It seems in general transform feedback is a very low priority for the Vulkan team (as can be seen by the fact that it&rsquo;s an extension and that extension wasn&rsquo;t prioritized). I think many graphics engineers don&rsquo;t particular like this feature, and perhaps Vulkan team have probably just decided it&rsquo;s time is up.</p>
+<p>It can be useful for particular cases, though, because it&rsquo;s the only way to reuse the input assembly infrastructure for non-rasterizing shaders. That&rsquo;s actually pretty nice, because otherwise anything you wanted to do with a vertex buffer would require writing custom input assembly code. I find it pretty convenient just for that &ndash; as a way to leverage the driver&rsquo;s input assembly infrastructure for a shader that doesn&rsquo;t draw (such as ray vs model detection).</p>
+<p>Also it&rsquo;s useful when you have existing transform feedback shaders that you just want to support without having to rewrite them.</p>
+<p>However, the API is quite clunky, and doesn&rsquo;t fit in well with other API features. And ultimately everything you can do with it can be done with compute shader (perhaps with some kind of input assembly library?). And input assembly may go the way of the dodo, also, with greater reliance on mesh shaders. Mesh shaders prefix the geometry pipeline with a compute-shader like program that generates primitives (perhaps from index and vertex buffers, or elsewhere). That effectively moves the entire concept of input assembly out from the driver domain and into the engine domain. Under that scheme the entire concept of transform feedback seems redundant &ndash; you would instead just repurpose your mesh shader code as a compute shader.</p>
+<p>It&rsquo;s interesting to think about, because input assembly has been one of the last legacies of the old fixed function pipeline model. It&rsquo;s not the very last (in the end, we still have triangle rasterization, right?), but it&rsquo;s kind of getting there. It&rsquo;s kind of curious to see how graphics APIs have slowly evolved away from concepts like vertices, attributes and triangles and become more and more of the APIs surface area starts to revolve around memory usage patterns, SIMD wave groups and parallelization.</p>
 
     </div>
     <div class="article-footer">
@@ -556,7 +688,7 @@ For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram. And 
   <ul class="post-copyright list-unstyled">
     <li class="post-copyright-link hidden-xs">
       <strong>Permalink: </strong>
-      <a href="https://djewsbury.github.io/2016/01/transmissionnodegraph/" title="Transmission Node Diagram" target="_blank" rel="external">https://djewsbury.github.io/2016/01/transmissionnodegraph/</a>
+      <a href="https://djewsbury.github.io/2021/08/vulkanstreamoutput/" title="Transform Feedback / Stream Output with the HLSL to Spir-V compiler" target="_blank" rel="external">https://djewsbury.github.io/2021/08/vulkanstreamoutput/</a>
     </li>
     <li class="post-copyright-license">
       <strong>License: </strong>
@@ -587,14 +719,9 @@ For example, the &ldquo;D&rdquo; term of the BTDF is a node on the diagram. And 
     <div class="bar-inner">
         <ul class="pager pull-left">
             <li class="prev">
-                <a href="https://djewsbury.github.io/2016/01/materialtool/" title="Material and Node Diagram Tool"><i
+                <a href="https://djewsbury.github.io/2021/07/reviewingsomedenoisingapproaches0/" title="Reviewing some denoising approaches (part 1)"><i
                         class="icon icon-angle-left"
                         aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
-            </li>
-            <li class="next">
-                <a href="https://djewsbury.github.io/2016/01/transmittedspecular/"
-                    title="Transmitted specular"><span>Newer&nbsp;&nbsp;</span><i
-                        class="icon icon-angle-right" aria-hidden="true"></i></a>
             </li>
             
             <li class="toggle-toc">
